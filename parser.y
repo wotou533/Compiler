@@ -1,5 +1,6 @@
 %{
     #include "node.h"
+    #include "stdio.h"
     #define YYDEBUG 1
     #define YYERROR_VERBOSE
 
