@@ -14,6 +14,7 @@
 %union {
     Node *start;
     Node *stmt;
+    Node *stmts;
     Node *comp_stmt;
     Node *type;
     Node *args_list;
@@ -56,16 +57,18 @@
 
 %%
 
-start : INT TIDENTIFIER TLPAREN TRPAREN TLBRACE comp_stmt TRBRACE {
-                                          RootNode = $<comp_stmt>6; }
+start : INT TIDENTIFIER TLPAREN TRPAREN comp_stmt { RootNode = $<stmt>5; }
       ;
 
-comp_stmt : stmt comp_stmt { $<comp_stmt>$ = $<comp_stmt>2;
-                             std::vector<Node*>::iterator it;
-                             it = $<comp_stmt>$->Children.begin();
-                             $<comp_stmt>$->Children.insert(it, $<stmt>1); }
-          | /* empty */ { $<comp_stmt>$ = new Node("COMP_STMT"); }
+comp_stmt : TLBRACE stmts TRBRACE { $<stmt>$ = $<stmt>2; }
           ;
+
+stmts : stmt stmts { $<stmt>$ = $<stmt>2;
+                     std::vector<Node*>::iterator it;
+                     it = $<stmt>$->Children.begin();
+                     $<stmt>$->Children.insert(it, $<stmt>1); }
+      | /* empty */ { $<stmt>$ = new Node("COMP_STMT"); }
+      ;
 
 stmt : matched_stmt { $<stmt>$ = $<stmt>1; }
      | open_stmt { $<stmt>$ = $<stmt>1; }
@@ -85,6 +88,7 @@ matched_stmt : IF TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt {
                                     $<stmt>$->Children.push_back($<args_list>2); }
              | expr TSEMICOLON { $<stmt>$ = new Node("STMT", "EXPR");
                                  $<stmt>$->Children.push_back($<expr>1); }
+             | comp_stmt { $<stmt>$ = $<stmt>1; }
              ;
 
 open_stmt : IF TLPAREN expr TRPAREN stmt {

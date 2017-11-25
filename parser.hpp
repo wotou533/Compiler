@@ -110,6 +110,7 @@ typedef union YYSTYPE
 {
     Node *start;
     Node *stmt;
+    Node *stmts;
     Node *comp_stmt;
     Node *type;
     Node *args_list;
@@ -121,7 +122,7 @@ typedef union YYSTYPE
     char *str;
 }
 /* Line 1529 of yacc.c.  */
-#line 125 "parser.hpp"
+#line 126 "parser.hpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
