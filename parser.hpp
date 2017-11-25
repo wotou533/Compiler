@@ -67,7 +67,9 @@
      TPLUS = 283,
      TMINUS = 284,
      TMUL = 285,
-     TDIV = 286
+     TDIV = 286,
+     TREAD = 287,
+     TWRITE = 288
    };
 #endif
 /* Tokens.  */
@@ -100,13 +102,15 @@
 #define TMINUS 284
 #define TMUL 285
 #define TDIV 286
+#define TREAD 287
+#define TWRITE 288
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 14 "parser.y"
+#line 15 "parser.y"
 {
     Node *start;
     Node *stmt;
@@ -122,7 +126,7 @@ typedef union YYSTYPE
     char *str;
 }
 /* Line 1529 of yacc.c.  */
-#line 126 "parser.hpp"
+#line 130 "parser.hpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

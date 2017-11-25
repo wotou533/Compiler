@@ -27,14 +27,8 @@ if                      return IF;
 else                    return ELSE;
 while                   return WHILE;
 
-\n						 		|
-{ws}+                         ;
-{identifier}                 yylval.str = yytext; return TIDENTIFIER;
-[+-]?[0-9]+\.[0-9]*          yylval.str = yytext; return TDOUBLE;
-[+-]?[0-9]+                  yylval.str = yytext; return TINTEGER;
-'(\\)?.?'               yylval.str = yytext; return TCHAR;
-[/][*](.|\n)*[*][/]     /* Skip multi-line comments. */;
-\/\/.*                  /* Skip single-line comments. */;
+read                    return TREAD;
+write                   return TWRITE;
 
 "="                     return TEQUAL;
 "=="                    return TCEQ;
@@ -54,6 +48,16 @@ while                   return WHILE;
 "*"                     return TMUL;
 "/"                     return TDIV;
 ";"                     return TSEMICOLON;
+
+\n						 		|
+{ws}+                         ;
+{identifier}                 yylval.str = yytext; return TIDENTIFIER;
+[0-9]+\.[0-9]*          yylval.str = yytext; return TDOUBLE;
+[0-9]+                  yylval.str = yytext; return TINTEGER;
+'(\\)?.?'                    yylval.str = yytext; return TCHAR;
+[/][*](.|\n)*[*][/]     /* Skip multi-line comments. */;
+\/\/.*                  /* Skip single-line comments. */;
+
 
 .                       printf("Unknown token!\n"); yyterminate();
 

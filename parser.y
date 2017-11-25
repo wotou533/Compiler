@@ -37,6 +37,7 @@
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT TSEMICOLON
 %token <token> TPLUS TMINUS TMUL TDIV
+%token <token> TREAD TWRITE
 
 /* Define the type of node our nonterminal symbols represent.
    The types refer to the %union declaration above. Ex: when
@@ -90,6 +91,12 @@ matched_stmt : IF TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt {
              | expr TSEMICOLON { $<stmt>$ = new Node("STMT", "EXPR");
                                  $<stmt>$->Children.push_back($<expr>1); }
              | comp_stmt { $<stmt>$ = $<stmt>1; }
+             | TREAD TLPAREN identifier TRPAREN TSEMICOLON {
+                                    $<stmt>$ = new Node("STMT", "READ");
+                                    $<stmt>$->Children.push_back($<expr>3); }
+             | TWRITE TLPAREN expr TRPAREN TSEMICOLON {
+                                    $<stmt>$ = new Node("STMT", "WRITE");
+                                    $<stmt>$->Children.push_back($<expr>3); }
              ;
 
 open_stmt : IF TLPAREN expr TRPAREN stmt {
@@ -144,6 +151,9 @@ expr : expr_alg TCEQ expr_alg { $<expr>$ = new Node("EXPR", "COMP_EQL");
        | expr_alg TCGE expr_alg { $<expr>$ = new Node("EXPR", "COMP_GE");
                                   $<expr>$->Children.push_back($<expr>1);
                                   $<expr>$->Children.push_back($<expr>3); }
+       | expr_alg TCNE expr_alg { $<expr>$ = new Node("EXPR", "COMP_NE");
+                                  $<expr>$->Children.push_back($<expr>1);
+                                  $<expr>$->Children.push_back($<expr>3); }
        | identifier TEQUAL expr { $<expr>$ = new Node("EXPR", "ASSIGN");
                                   $<expr>$->Children.push_back($<expr>1);
                                   $<expr>$->Children.push_back($<expr>3); }
@@ -172,6 +182,9 @@ factor : TLPAREN expr TRPAREN { $<expr>$ = new Node("EXPR", "PARENED");
                                 $<expr>$->Children.push_back($<expr>2); }
        | identifier { $<factor>$ = $<expr>1; }
        | TINTEGER { $<factor>$ = new Node("VAL", $1); }
+       | TCHAR { $<factor>$ = new Node("VAL", $1); }
+       | TMINUS TINTEGER { $<factor>$ = new Node("VAL", $2, "NEG"); }
+       | TPLUS TINTEGER { $<factor>$ = new Node("VAL", $2); }
        ;
 
 identifier : TIDENTIFIER { $<identifier>$ = new Node("VAR", $1); }
