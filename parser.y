@@ -36,9 +36,10 @@
 %token <str> TIDENTIFIER TINTEGER TDOUBLE TCHAR
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT TSEMICOLON
-%token <token> TPLUS TMINUS TMUL TDIV
+%token <token> TPLUS TMINUS TMUL TDIV TMOD
 %token <token> TREAD TWRITE
 %token <token> TNOT TAND TOR
+%token <token> TBNOT TBAND TBOR
 
 /* Define the type of node our nonterminal symbols represent.
    The types refer to the %union declaration above. Ex: when
@@ -89,10 +90,6 @@ matched_stmt : IF TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt {
                                     $<stmt>$->Children.push_back($<stmt>3);
                                     $<stmt>$->Children.push_back($<stmt>5);
                                     $<stmt>$->Children.push_back($<stmt>7); }
-             | type args_list TSEMICOLON {
-                                    $<stmt>$ = new Node("STMT", "DECL");
-                                    $<stmt>$->Children.push_back($<type>1);
-                                    $<stmt>$->Children.push_back($<args_list>2); }
              | expr TSEMICOLON { $<stmt>$ = new Node("STMT", "EXPR");
                                  $<stmt>$->Children.push_back($<expr>1); }
              | comp_stmt { $<stmt>$ = $<stmt>1; }
@@ -102,12 +99,12 @@ matched_stmt : IF TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt {
              | TWRITE TLPAREN expr TRPAREN TSEMICOLON {
                                     $<stmt>$ = new Node("STMT", "WRITE");
                                     $<stmt>$->Children.push_back($<expr>3); }
-             | WHILE TLPAREN expr TRPAREN comp_stmt {
+             | WHILE TLPAREN expr TRPAREN matched_stmt {
                                     $<stmt>$ = new Node("STMT", "WHILE");
                                     $<expr>3->NodeInfo = "CONDITION";
                                     $<stmt>$->Children.push_back($<expr>3);
                                     $<stmt>$->Children.push_back($<stmt>5); }
-             | FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN comp_stmt {
+             | FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN matched_stmt {
                                     $<stmt>$ = new Node("STMT", "FOR");
                                     $<expr>3->NodeInfo = "START";
                                     $<expr>5->NodeInfo = "CONDITION";
@@ -149,15 +146,15 @@ args_list : decl_assign_expr { $<args_list>$ = new Node("ARGS_LIST");
                                $<args_list>$->Children.insert(it, $<expr>1); }
           ;
 
-decl_assign_expr : identifier TEQUAL expr {
+decl_assign_expr : factor TEQUAL expr_alg {
                                $<expr>$ = new Node("EXPR", "DECL_ASSIGN");
                                $<expr>$->Children.push_back($<identifier>1);
                                $<expr>$->Children.push_back($<expr>3); }
-                 | identifier { $<expr>$ = $<expr>1; }
+                 | factor { $<expr>$ = $<expr>1; }
                  ;
 
 optional_expr : expr { $<expr>$ = $<expr>1; }
-              | /* empty */ { $<expr>$ = new Node("EXPR", "OPTIONAL", "EMPTY"); }
+              | /* empty */ { $<expr>$ = new Node("OPTIONAL_EXPR", "EMPTY"); }
               ;
 
 expr : expr_alg TCEQ expr_alg { $<expr>$ = new Node("EXPR", "COMP_EQL");
@@ -182,6 +179,9 @@ expr : expr_alg TCEQ expr_alg { $<expr>$ = new Node("EXPR", "COMP_EQL");
                                   $<expr>$->Children.push_back($<expr>1);
                                   $<expr>$->Children.push_back($<expr>3); }
        | expr_alg { $<expr>$ = $<expr>1; }
+       | type args_list { $<expr>$ = new Node("EXPR", "DECL");
+                          $<expr>$->Children.push_back($<type>1);
+                          $<expr>$->Children.push_back($<expr>2); }
        ;
 
 expr_alg : term TPLUS expr_alg { $<expr>$ = new Node("EXPR", "ADD");
@@ -199,6 +199,9 @@ term : factor TMUL term { $<expr>$ = new Node("EXPR", "MUL");
      | factor TDIV term { $<expr>$ = new Node("EXPR", "DIV");
                           $<expr>$->Children.push_back($<factor>1);
                           $<expr>$->Children.push_back($<term>3); }
+     | factor TMOD term { $<expr>$ = new Node("EXPR", "MOD");
+                          $<expr>$->Children.push_back($<factor>1);
+                          $<expr>$->Children.push_back($<term>3); }
      | factor { $<term>$ = $<term>1; }
      ;
 
@@ -206,6 +209,7 @@ factor : TLPAREN expr TRPAREN { $<expr>$ = new Node("EXPR", "PARENED");
                                 $<expr>$->Children.push_back($<expr>2); }
        | identifier { $<factor>$ = $<expr>1; }
        | TINTEGER { $<factor>$ = new Node("VAL", $1); }
+       | TDOUBLE { $<factor>$ = new Node("VAL", $1); }
        | TCHAR { $<factor>$ = new Node("VAL", $1); }
        | TMINUS TINTEGER { $<factor>$ = new Node("VAL", $2, "NEG"); }
        | TPLUS TINTEGER { $<factor>$ = new Node("VAL", $2); }

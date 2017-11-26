@@ -75,11 +75,15 @@ extern int yydebug;
     TMINUS = 285,
     TMUL = 286,
     TDIV = 287,
-    TREAD = 288,
-    TWRITE = 289,
-    TNOT = 290,
-    TAND = 291,
-    TOR = 292
+    TMOD = 288,
+    TREAD = 289,
+    TWRITE = 290,
+    TNOT = 291,
+    TAND = 292,
+    TOR = 293,
+    TBNOT = 294,
+    TBAND = 295,
+    TBOR = 296
   };
 #endif
 
@@ -103,7 +107,7 @@ union YYSTYPE
     Node *identifier;
     char *str;
 
-#line 107 "parser.hpp" /* yacc.c:1909  */
+#line 111 "parser.hpp" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
