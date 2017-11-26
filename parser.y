@@ -54,7 +54,10 @@
 /* Operator precedence for mathematical operators */
 %left TPLUS TMINUS
 %left TMUL TDIV
-%left TEQUAL
+%left TAND TOR
+%left TLPAREN TRPAREN TLBRACE TRBRACE TDOT
+%right TEQUAL
+%right TNOT
 
 %start start
 
