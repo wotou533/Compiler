@@ -36,27 +36,38 @@ write                   return TWRITE;
 "!"                     return TNOT;
 "&&"                    return TAND;
 "||"                    return TOR;
+
 "~"                     return TBNOT;
 "&"                     return TBAND;
 "|"                     return TBOR;
+"^"                     return TBXOR;
+
+"<<"                    return TBLEFT;
+">>"                    return TBRIGHT;
+
 "="                     return TEQUAL;
+
 "=="                    return TCEQ;
 "!="                    return TCNE;
 "<"                     return TCLT;
 "<="                    return TCLE;
 ">"                     return TCGT;
 ">="                    return TCGE;
+
 "("                     return TLPAREN;
 ")"                     return TRPAREN;
 "{"                     return TLBRACE;
 "}"                     return TRBRACE;
+
 "."                     return TDOT;
 ","                     return TCOMMA;
+
 "+"                     return TPLUS;
 "-"                     return TMINUS;
 "*"                     return TMUL;
 "/"                     return TDIV;
 "%"                     return TMOD;
+
 ";"                     return TSEMICOLON;
 
 \n						 		|
