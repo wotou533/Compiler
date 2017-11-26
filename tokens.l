@@ -16,6 +16,8 @@ escape_sequence					({simple_escape_sequence}|{octal_escape_sequence}|{hexadecim
 universal_character_name		(\\u{hex}{hex}{hex}{hex}|\\U{hex}{hex}{hex}{hex}{hex}{hex}{hex}{hex})
 non_digit						({letter}|{universal_character_name})
 identifier						({non_digit}({non_digit}|{digit})*)
+dot_number          (({digit}*\.{digit}+)|({digit}+\.{digit}*))
+integar             ({digit}+)
 
 %%
 
@@ -56,8 +58,8 @@ write                   return TWRITE;
 \n						 		|
 {ws}+                         ;
 {identifier}                 yylval.str = yytext; return TIDENTIFIER;
-[0-9]+\.[0-9]*          yylval.str = yytext; return TDOUBLE;
-[0-9]+                  yylval.str = yytext; return TINTEGER;
+{dot_number}|(({dot_number}|{integar})[Ee][+-]?{integar})  yylval.str = yytext; return TDOUBLE;
+{integar}                  yylval.str = yytext; return TINTEGER;
 '(\\)?.?'                    yylval.str = yytext; return TCHAR;
 [/][*](.|\n)*[*][/]     /* Skip multi-line comments. */;
 \/\/.*                  /* Skip single-line comments. */;
