@@ -32,19 +32,20 @@
    match our tokens.l lex file. We also define the node type
    they represent.
  */
-%token <string> INT CHAR FLOAT DOUBLE IF ELSE WHILE
+%token <string> INT CHAR FLOAT DOUBLE IF ELSE WHILE FOR
 %token <str> TIDENTIFIER TINTEGER TDOUBLE TCHAR
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT TSEMICOLON
 %token <token> TPLUS TMINUS TMUL TDIV
 %token <token> TREAD TWRITE
+%token <token> TNOT TAND TOR
 
 /* Define the type of node our nonterminal symbols represent.
    The types refer to the %union declaration above. Ex: when
    we call an ident (defined by union type ident) we are really
    calling an (NIdentifier*). It makes the compiler happy.
  */
-%type <expr> expr
+%type <expr> expr optional_expr
 //%type <block> program stmts block
 %type <stmt> stmt matched_stmt open_stmt
 //%type <token> comparison
@@ -63,6 +64,7 @@ start : INT TIDENTIFIER TLPAREN TRPAREN comp_stmt { RootNode = $<stmt>5; }
       ;
 
 comp_stmt : TLBRACE stmts TRBRACE { $<stmt>$ = $<stmt>2; }
+          | TSEMICOLON { $<stmt>$ = new Node("SEMICOLON"); }
           ;
 
 stmts : stmt stmts { $<stmt>$ = $<stmt>2;
@@ -97,6 +99,20 @@ matched_stmt : IF TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt {
              | TWRITE TLPAREN expr TRPAREN TSEMICOLON {
                                     $<stmt>$ = new Node("STMT", "WRITE");
                                     $<stmt>$->Children.push_back($<expr>3); }
+             | WHILE TLPAREN expr TRPAREN comp_stmt {
+                                    $<stmt>$ = new Node("STMT", "WHILE");
+                                    $<expr>3->NodeInfo = "CONDITION";
+                                    $<stmt>$->Children.push_back($<expr>3);
+                                    $<stmt>$->Children.push_back($<stmt>5); }
+             | FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN comp_stmt {
+                                    $<stmt>$ = new Node("STMT", "FOR");
+                                    $<expr>3->NodeInfo = "START";
+                                    $<expr>5->NodeInfo = "CONDITION";
+                                    $<expr>7->NodeInfo = "ITER_ACTION";
+                                    $<stmt>$->Children.push_back($<expr>3);
+                                    $<stmt>$->Children.push_back($<expr>5);
+                                    $<stmt>$->Children.push_back($<expr>7);
+                                    $<stmt>$->Children.push_back($<stmt>9); }
              ;
 
 open_stmt : IF TLPAREN expr TRPAREN stmt {
@@ -134,7 +150,12 @@ decl_assign_expr : identifier TEQUAL expr {
                                $<expr>$ = new Node("EXPR", "DECL_ASSIGN");
                                $<expr>$->Children.push_back($<identifier>1);
                                $<expr>$->Children.push_back($<expr>3); }
+                 | identifier { $<expr>$ = $<expr>1; }
                  ;
+
+optional_expr : expr { $<expr>$ = $<expr>1; }
+              | /* empty */ { $<expr>$ = new Node("EXPR", "OPTIONAL", "EMPTY"); }
+              ;
 
 expr : expr_alg TCEQ expr_alg { $<expr>$ = new Node("EXPR", "COMP_EQL");
                                   $<expr>$->Children.push_back($<expr>1);
@@ -154,7 +175,7 @@ expr : expr_alg TCEQ expr_alg { $<expr>$ = new Node("EXPR", "COMP_EQL");
        | expr_alg TCNE expr_alg { $<expr>$ = new Node("EXPR", "COMP_NE");
                                   $<expr>$->Children.push_back($<expr>1);
                                   $<expr>$->Children.push_back($<expr>3); }
-       | identifier TEQUAL expr { $<expr>$ = new Node("EXPR", "ASSIGN");
+       | factor TEQUAL expr { $<expr>$ = new Node("EXPR", "ASSIGN");
                                   $<expr>$->Children.push_back($<expr>1);
                                   $<expr>$->Children.push_back($<expr>3); }
        | expr_alg { $<expr>$ = $<expr>1; }

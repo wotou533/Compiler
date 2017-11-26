@@ -26,10 +26,14 @@ double                  return DOUBLE;
 if                      return IF;
 else                    return ELSE;
 while                   return WHILE;
+for                     return FOR;
 
 read                    return TREAD;
 write                   return TWRITE;
 
+"!"                     return TNOT;
+"&&"                    return TAND;
+"||"                    return TOR;
 "="                     return TEQUAL;
 "=="                    return TCEQ;
 "!="                    return TCNE;

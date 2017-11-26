@@ -46,30 +46,34 @@
      IF = 262,
      ELSE = 263,
      WHILE = 264,
-     TIDENTIFIER = 265,
-     TINTEGER = 266,
-     TDOUBLE = 267,
-     TCHAR = 268,
-     TCEQ = 269,
-     TCNE = 270,
-     TCLT = 271,
-     TCLE = 272,
-     TCGT = 273,
-     TCGE = 274,
-     TEQUAL = 275,
-     TLPAREN = 276,
-     TRPAREN = 277,
-     TLBRACE = 278,
-     TRBRACE = 279,
-     TCOMMA = 280,
-     TDOT = 281,
-     TSEMICOLON = 282,
-     TPLUS = 283,
-     TMINUS = 284,
-     TMUL = 285,
-     TDIV = 286,
-     TREAD = 287,
-     TWRITE = 288
+     FOR = 265,
+     TIDENTIFIER = 266,
+     TINTEGER = 267,
+     TDOUBLE = 268,
+     TCHAR = 269,
+     TCEQ = 270,
+     TCNE = 271,
+     TCLT = 272,
+     TCLE = 273,
+     TCGT = 274,
+     TCGE = 275,
+     TEQUAL = 276,
+     TLPAREN = 277,
+     TRPAREN = 278,
+     TLBRACE = 279,
+     TRBRACE = 280,
+     TCOMMA = 281,
+     TDOT = 282,
+     TSEMICOLON = 283,
+     TPLUS = 284,
+     TMINUS = 285,
+     TMUL = 286,
+     TDIV = 287,
+     TREAD = 288,
+     TWRITE = 289,
+     TNOT = 290,
+     TAND = 291,
+     TOR = 292
    };
 #endif
 /* Tokens.  */
@@ -80,30 +84,34 @@
 #define IF 262
 #define ELSE 263
 #define WHILE 264
-#define TIDENTIFIER 265
-#define TINTEGER 266
-#define TDOUBLE 267
-#define TCHAR 268
-#define TCEQ 269
-#define TCNE 270
-#define TCLT 271
-#define TCLE 272
-#define TCGT 273
-#define TCGE 274
-#define TEQUAL 275
-#define TLPAREN 276
-#define TRPAREN 277
-#define TLBRACE 278
-#define TRBRACE 279
-#define TCOMMA 280
-#define TDOT 281
-#define TSEMICOLON 282
-#define TPLUS 283
-#define TMINUS 284
-#define TMUL 285
-#define TDIV 286
-#define TREAD 287
-#define TWRITE 288
+#define FOR 265
+#define TIDENTIFIER 266
+#define TINTEGER 267
+#define TDOUBLE 268
+#define TCHAR 269
+#define TCEQ 270
+#define TCNE 271
+#define TCLT 272
+#define TCLE 273
+#define TCGT 274
+#define TCGE 275
+#define TEQUAL 276
+#define TLPAREN 277
+#define TRPAREN 278
+#define TLBRACE 279
+#define TRBRACE 280
+#define TCOMMA 281
+#define TDOT 282
+#define TSEMICOLON 283
+#define TPLUS 284
+#define TMINUS 285
+#define TMUL 286
+#define TDIV 287
+#define TREAD 288
+#define TWRITE 289
+#define TNOT 290
+#define TAND 291
+#define TOR 292
 
 
 
@@ -126,7 +134,7 @@ typedef union YYSTYPE
     char *str;
 }
 /* Line 1529 of yacc.c.  */
-#line 130 "parser.hpp"
+#line 138 "parser.hpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

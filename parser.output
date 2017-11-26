@@ -1,0 +1,1263 @@
+Terminals which are not used
+
+   TDOUBLE
+   TDOT
+   TNOT
+   TAND
+   TOR
+
+
+Grammar
+
+    0 $accept: start $end
+
+    1 start: INT TIDENTIFIER TLPAREN TRPAREN comp_stmt
+
+    2 comp_stmt: TLBRACE stmts TRBRACE
+    3          | TSEMICOLON
+
+    4 stmts: stmt stmts
+    5      | /* empty */
+
+    6 stmt: matched_stmt
+    7     | open_stmt
+
+    8 matched_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt
+    9             | type args_list TSEMICOLON
+   10             | expr TSEMICOLON
+   11             | comp_stmt
+   12             | TREAD TLPAREN identifier TRPAREN TSEMICOLON
+   13             | TWRITE TLPAREN expr TRPAREN TSEMICOLON
+   14             | WHILE TLPAREN expr TRPAREN comp_stmt
+   15             | FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN comp_stmt
+
+   16 open_stmt: IF TLPAREN expr TRPAREN stmt
+   17          | IF TLPAREN expr TRPAREN matched_stmt ELSE open_stmt
+
+   18 type: INT
+   19     | CHAR
+   20     | FLOAT
+   21     | DOUBLE
+
+   22 args_list: decl_assign_expr
+   23          | decl_assign_expr TCOMMA args_list
+
+   24 decl_assign_expr: identifier TEQUAL expr
+   25                 | identifier
+
+   26 optional_expr: expr
+   27              | /* empty */
+
+   28 expr: expr_alg TCEQ expr_alg
+   29     | expr_alg TCLT expr_alg
+   30     | expr_alg TCGT expr_alg
+   31     | expr_alg TCLE expr_alg
+   32     | expr_alg TCGE expr_alg
+   33     | expr_alg TCNE expr_alg
+   34     | factor TEQUAL expr
+   35     | expr_alg
+
+   36 expr_alg: term TPLUS expr_alg
+   37         | term TMINUS expr_alg
+   38         | term
+
+   39 term: factor TMUL term
+   40     | factor TDIV term
+   41     | factor
+
+   42 factor: TLPAREN expr TRPAREN
+   43       | identifier
+   44       | TINTEGER
+   45       | TCHAR
+   46       | TMINUS TINTEGER
+   47       | TPLUS TINTEGER
+
+   48 identifier: TIDENTIFIER
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+INT (258) 1 18
+CHAR (259) 19
+FLOAT (260) 20
+DOUBLE (261) 21
+IF (262) 8 16 17
+ELSE (263) 8 17
+WHILE (264) 14
+FOR (265) 15
+TIDENTIFIER (266) 1 48
+TINTEGER (267) 44 46 47
+TDOUBLE (268)
+TCHAR (269) 45
+TCEQ (270) 28
+TCNE (271) 33
+TCLT (272) 29
+TCLE (273) 31
+TCGT (274) 30
+TCGE (275) 32
+TEQUAL (276) 24 34
+TLPAREN (277) 1 8 12 13 14 15 16 17 42
+TRPAREN (278) 1 8 12 13 14 15 16 17 42
+TLBRACE (279) 2
+TRBRACE (280) 2
+TCOMMA (281) 23
+TDOT (282)
+TSEMICOLON (283) 3 9 10 12 13 15
+TPLUS (284) 36 47
+TMINUS (285) 37 46
+TMUL (286) 39
+TDIV (287) 40
+TREAD (288) 12
+TWRITE (289) 13
+TNOT (290)
+TAND (291)
+TOR (292)
+
+
+Nonterminals, with rules where they appear
+
+$accept (38)
+    on left: 0
+start (39)
+    on left: 1, on right: 0
+comp_stmt (40)
+    on left: 2 3, on right: 1 11 14 15
+stmts (41)
+    on left: 4 5, on right: 2 4
+stmt (42)
+    on left: 6 7, on right: 4 16
+matched_stmt (43)
+    on left: 8 9 10 11 12 13 14 15, on right: 6 8 17
+open_stmt (44)
+    on left: 16 17, on right: 7 17
+type (45)
+    on left: 18 19 20 21, on right: 9
+args_list (46)
+    on left: 22 23, on right: 9 23
+decl_assign_expr (47)
+    on left: 24 25, on right: 22 23
+optional_expr (48)
+    on left: 26 27, on right: 15
+expr (49)
+    on left: 28 29 30 31 32 33 34 35, on right: 8 10 13 14 16 17 24
+    26 34 42
+expr_alg (50)
+    on left: 36 37 38, on right: 28 29 30 31 32 33 35 36 37
+term (51)
+    on left: 39 40 41, on right: 36 37 38 39 40
+factor (52)
+    on left: 42 43 44 45 46 47, on right: 34 39 40 41
+identifier (53)
+    on left: 48, on right: 12 24 25 43
+
+
+state 0
+
+    0 $accept: . start $end
+
+    INT  shift, and go to state 1
+
+    start  go to state 2
+
+
+state 1
+
+    1 start: INT . TIDENTIFIER TLPAREN TRPAREN comp_stmt
+
+    TIDENTIFIER  shift, and go to state 3
+
+
+state 2
+
+    0 $accept: start . $end
+
+    $end  shift, and go to state 4
+
+
+state 3
+
+    1 start: INT TIDENTIFIER . TLPAREN TRPAREN comp_stmt
+
+    TLPAREN  shift, and go to state 5
+
+
+state 4
+
+    0 $accept: start $end .
+
+    $default  accept
+
+
+state 5
+
+    1 start: INT TIDENTIFIER TLPAREN . TRPAREN comp_stmt
+
+    TRPAREN  shift, and go to state 6
+
+
+state 6
+
+    1 start: INT TIDENTIFIER TLPAREN TRPAREN . comp_stmt
+
+    TLBRACE     shift, and go to state 7
+    TSEMICOLON  shift, and go to state 8
+
+    comp_stmt  go to state 9
+
+
+state 7
+
+    2 comp_stmt: TLBRACE . stmts TRBRACE
+
+    INT          shift, and go to state 10
+    CHAR         shift, and go to state 11
+    FLOAT        shift, and go to state 12
+    DOUBLE       shift, and go to state 13
+    IF           shift, and go to state 14
+    WHILE        shift, and go to state 15
+    FOR          shift, and go to state 16
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TLBRACE      shift, and go to state 7
+    TSEMICOLON   shift, and go to state 8
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+    TREAD        shift, and go to state 23
+    TWRITE       shift, and go to state 24
+
+    $default  reduce using rule 5 (stmts)
+
+    comp_stmt     go to state 25
+    stmts         go to state 26
+    stmt          go to state 27
+    matched_stmt  go to state 28
+    open_stmt     go to state 29
+    type          go to state 30
+    expr          go to state 31
+    expr_alg      go to state 32
+    term          go to state 33
+    factor        go to state 34
+    identifier    go to state 35
+
+
+state 8
+
+    3 comp_stmt: TSEMICOLON .
+
+    $default  reduce using rule 3 (comp_stmt)
+
+
+state 9
+
+    1 start: INT TIDENTIFIER TLPAREN TRPAREN comp_stmt .
+
+    $default  reduce using rule 1 (start)
+
+
+state 10
+
+   18 type: INT .
+
+    $default  reduce using rule 18 (type)
+
+
+state 11
+
+   19 type: CHAR .
+
+    $default  reduce using rule 19 (type)
+
+
+state 12
+
+   20 type: FLOAT .
+
+    $default  reduce using rule 20 (type)
+
+
+state 13
+
+   21 type: DOUBLE .
+
+    $default  reduce using rule 21 (type)
+
+
+state 14
+
+    8 matched_stmt: IF . TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt
+   16 open_stmt: IF . TLPAREN expr TRPAREN stmt
+   17          | IF . TLPAREN expr TRPAREN matched_stmt ELSE open_stmt
+
+    TLPAREN  shift, and go to state 36
+
+
+state 15
+
+   14 matched_stmt: WHILE . TLPAREN expr TRPAREN comp_stmt
+
+    TLPAREN  shift, and go to state 37
+
+
+state 16
+
+   15 matched_stmt: FOR . TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN comp_stmt
+
+    TLPAREN  shift, and go to state 38
+
+
+state 17
+
+   48 identifier: TIDENTIFIER .
+
+    $default  reduce using rule 48 (identifier)
+
+
+state 18
+
+   44 factor: TINTEGER .
+
+    $default  reduce using rule 44 (factor)
+
+
+state 19
+
+   45 factor: TCHAR .
+
+    $default  reduce using rule 45 (factor)
+
+
+state 20
+
+   42 factor: TLPAREN . expr TRPAREN
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr        go to state 39
+    expr_alg    go to state 32
+    term        go to state 33
+    factor      go to state 34
+    identifier  go to state 35
+
+
+state 21
+
+   47 factor: TPLUS . TINTEGER
+
+    TINTEGER  shift, and go to state 40
+
+
+state 22
+
+   46 factor: TMINUS . TINTEGER
+
+    TINTEGER  shift, and go to state 41
+
+
+state 23
+
+   12 matched_stmt: TREAD . TLPAREN identifier TRPAREN TSEMICOLON
+
+    TLPAREN  shift, and go to state 42
+
+
+state 24
+
+   13 matched_stmt: TWRITE . TLPAREN expr TRPAREN TSEMICOLON
+
+    TLPAREN  shift, and go to state 43
+
+
+state 25
+
+   11 matched_stmt: comp_stmt .
+
+    $default  reduce using rule 11 (matched_stmt)
+
+
+state 26
+
+    2 comp_stmt: TLBRACE stmts . TRBRACE
+
+    TRBRACE  shift, and go to state 44
+
+
+state 27
+
+    4 stmts: stmt . stmts
+
+    INT          shift, and go to state 10
+    CHAR         shift, and go to state 11
+    FLOAT        shift, and go to state 12
+    DOUBLE       shift, and go to state 13
+    IF           shift, and go to state 14
+    WHILE        shift, and go to state 15
+    FOR          shift, and go to state 16
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TLBRACE      shift, and go to state 7
+    TSEMICOLON   shift, and go to state 8
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+    TREAD        shift, and go to state 23
+    TWRITE       shift, and go to state 24
+
+    $default  reduce using rule 5 (stmts)
+
+    comp_stmt     go to state 25
+    stmts         go to state 45
+    stmt          go to state 27
+    matched_stmt  go to state 28
+    open_stmt     go to state 29
+    type          go to state 30
+    expr          go to state 31
+    expr_alg      go to state 32
+    term          go to state 33
+    factor        go to state 34
+    identifier    go to state 35
+
+
+state 28
+
+    6 stmt: matched_stmt .
+
+    $default  reduce using rule 6 (stmt)
+
+
+state 29
+
+    7 stmt: open_stmt .
+
+    $default  reduce using rule 7 (stmt)
+
+
+state 30
+
+    9 matched_stmt: type . args_list TSEMICOLON
+
+    TIDENTIFIER  shift, and go to state 17
+
+    args_list         go to state 46
+    decl_assign_expr  go to state 47
+    identifier        go to state 48
+
+
+state 31
+
+   10 matched_stmt: expr . TSEMICOLON
+
+    TSEMICOLON  shift, and go to state 49
+
+
+state 32
+
+   28 expr: expr_alg . TCEQ expr_alg
+   29     | expr_alg . TCLT expr_alg
+   30     | expr_alg . TCGT expr_alg
+   31     | expr_alg . TCLE expr_alg
+   32     | expr_alg . TCGE expr_alg
+   33     | expr_alg . TCNE expr_alg
+   35     | expr_alg .
+
+    TCEQ  shift, and go to state 50
+    TCNE  shift, and go to state 51
+    TCLT  shift, and go to state 52
+    TCLE  shift, and go to state 53
+    TCGT  shift, and go to state 54
+    TCGE  shift, and go to state 55
+
+    $default  reduce using rule 35 (expr)
+
+
+state 33
+
+   36 expr_alg: term . TPLUS expr_alg
+   37         | term . TMINUS expr_alg
+   38         | term .
+
+    TPLUS   shift, and go to state 56
+    TMINUS  shift, and go to state 57
+
+    $default  reduce using rule 38 (expr_alg)
+
+
+state 34
+
+   34 expr: factor . TEQUAL expr
+   39 term: factor . TMUL term
+   40     | factor . TDIV term
+   41     | factor .
+
+    TEQUAL  shift, and go to state 58
+    TMUL    shift, and go to state 59
+    TDIV    shift, and go to state 60
+
+    $default  reduce using rule 41 (term)
+
+
+state 35
+
+   43 factor: identifier .
+
+    $default  reduce using rule 43 (factor)
+
+
+state 36
+
+    8 matched_stmt: IF TLPAREN . expr TRPAREN matched_stmt ELSE matched_stmt
+   16 open_stmt: IF TLPAREN . expr TRPAREN stmt
+   17          | IF TLPAREN . expr TRPAREN matched_stmt ELSE open_stmt
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr        go to state 61
+    expr_alg    go to state 32
+    term        go to state 33
+    factor      go to state 34
+    identifier  go to state 35
+
+
+state 37
+
+   14 matched_stmt: WHILE TLPAREN . expr TRPAREN comp_stmt
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr        go to state 62
+    expr_alg    go to state 32
+    term        go to state 33
+    factor      go to state 34
+    identifier  go to state 35
+
+
+state 38
+
+   15 matched_stmt: FOR TLPAREN . optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN comp_stmt
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    $default  reduce using rule 27 (optional_expr)
+
+    optional_expr  go to state 63
+    expr           go to state 64
+    expr_alg       go to state 32
+    term           go to state 33
+    factor         go to state 34
+    identifier     go to state 35
+
+
+state 39
+
+   42 factor: TLPAREN expr . TRPAREN
+
+    TRPAREN  shift, and go to state 65
+
+
+state 40
+
+   47 factor: TPLUS TINTEGER .
+
+    $default  reduce using rule 47 (factor)
+
+
+state 41
+
+   46 factor: TMINUS TINTEGER .
+
+    $default  reduce using rule 46 (factor)
+
+
+state 42
+
+   12 matched_stmt: TREAD TLPAREN . identifier TRPAREN TSEMICOLON
+
+    TIDENTIFIER  shift, and go to state 17
+
+    identifier  go to state 66
+
+
+state 43
+
+   13 matched_stmt: TWRITE TLPAREN . expr TRPAREN TSEMICOLON
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr        go to state 67
+    expr_alg    go to state 32
+    term        go to state 33
+    factor      go to state 34
+    identifier  go to state 35
+
+
+state 44
+
+    2 comp_stmt: TLBRACE stmts TRBRACE .
+
+    $default  reduce using rule 2 (comp_stmt)
+
+
+state 45
+
+    4 stmts: stmt stmts .
+
+    $default  reduce using rule 4 (stmts)
+
+
+state 46
+
+    9 matched_stmt: type args_list . TSEMICOLON
+
+    TSEMICOLON  shift, and go to state 68
+
+
+state 47
+
+   22 args_list: decl_assign_expr .
+   23          | decl_assign_expr . TCOMMA args_list
+
+    TCOMMA  shift, and go to state 69
+
+    $default  reduce using rule 22 (args_list)
+
+
+state 48
+
+   24 decl_assign_expr: identifier . TEQUAL expr
+   25                 | identifier .
+
+    TEQUAL  shift, and go to state 70
+
+    $default  reduce using rule 25 (decl_assign_expr)
+
+
+state 49
+
+   10 matched_stmt: expr TSEMICOLON .
+
+    $default  reduce using rule 10 (matched_stmt)
+
+
+state 50
+
+   28 expr: expr_alg TCEQ . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr_alg    go to state 71
+    term        go to state 33
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 51
+
+   33 expr: expr_alg TCNE . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr_alg    go to state 73
+    term        go to state 33
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 52
+
+   29 expr: expr_alg TCLT . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr_alg    go to state 74
+    term        go to state 33
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 53
+
+   31 expr: expr_alg TCLE . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr_alg    go to state 75
+    term        go to state 33
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 54
+
+   30 expr: expr_alg TCGT . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr_alg    go to state 76
+    term        go to state 33
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 55
+
+   32 expr: expr_alg TCGE . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr_alg    go to state 77
+    term        go to state 33
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 56
+
+   36 expr_alg: term TPLUS . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr_alg    go to state 78
+    term        go to state 33
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 57
+
+   37 expr_alg: term TMINUS . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr_alg    go to state 79
+    term        go to state 33
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 58
+
+   34 expr: factor TEQUAL . expr
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr        go to state 80
+    expr_alg    go to state 32
+    term        go to state 33
+    factor      go to state 34
+    identifier  go to state 35
+
+
+state 59
+
+   39 term: factor TMUL . term
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    term        go to state 81
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 60
+
+   40 term: factor TDIV . term
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    term        go to state 82
+    factor      go to state 72
+    identifier  go to state 35
+
+
+state 61
+
+    8 matched_stmt: IF TLPAREN expr . TRPAREN matched_stmt ELSE matched_stmt
+   16 open_stmt: IF TLPAREN expr . TRPAREN stmt
+   17          | IF TLPAREN expr . TRPAREN matched_stmt ELSE open_stmt
+
+    TRPAREN  shift, and go to state 83
+
+
+state 62
+
+   14 matched_stmt: WHILE TLPAREN expr . TRPAREN comp_stmt
+
+    TRPAREN  shift, and go to state 84
+
+
+state 63
+
+   15 matched_stmt: FOR TLPAREN optional_expr . TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN comp_stmt
+
+    TSEMICOLON  shift, and go to state 85
+
+
+state 64
+
+   26 optional_expr: expr .
+
+    $default  reduce using rule 26 (optional_expr)
+
+
+state 65
+
+   42 factor: TLPAREN expr TRPAREN .
+
+    $default  reduce using rule 42 (factor)
+
+
+state 66
+
+   12 matched_stmt: TREAD TLPAREN identifier . TRPAREN TSEMICOLON
+
+    TRPAREN  shift, and go to state 86
+
+
+state 67
+
+   13 matched_stmt: TWRITE TLPAREN expr . TRPAREN TSEMICOLON
+
+    TRPAREN  shift, and go to state 87
+
+
+state 68
+
+    9 matched_stmt: type args_list TSEMICOLON .
+
+    $default  reduce using rule 9 (matched_stmt)
+
+
+state 69
+
+   23 args_list: decl_assign_expr TCOMMA . args_list
+
+    TIDENTIFIER  shift, and go to state 17
+
+    args_list         go to state 88
+    decl_assign_expr  go to state 47
+    identifier        go to state 48
+
+
+state 70
+
+   24 decl_assign_expr: identifier TEQUAL . expr
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    expr        go to state 89
+    expr_alg    go to state 32
+    term        go to state 33
+    factor      go to state 34
+    identifier  go to state 35
+
+
+state 71
+
+   28 expr: expr_alg TCEQ expr_alg .
+
+    $default  reduce using rule 28 (expr)
+
+
+state 72
+
+   39 term: factor . TMUL term
+   40     | factor . TDIV term
+   41     | factor .
+
+    TMUL  shift, and go to state 59
+    TDIV  shift, and go to state 60
+
+    $default  reduce using rule 41 (term)
+
+
+state 73
+
+   33 expr: expr_alg TCNE expr_alg .
+
+    $default  reduce using rule 33 (expr)
+
+
+state 74
+
+   29 expr: expr_alg TCLT expr_alg .
+
+    $default  reduce using rule 29 (expr)
+
+
+state 75
+
+   31 expr: expr_alg TCLE expr_alg .
+
+    $default  reduce using rule 31 (expr)
+
+
+state 76
+
+   30 expr: expr_alg TCGT expr_alg .
+
+    $default  reduce using rule 30 (expr)
+
+
+state 77
+
+   32 expr: expr_alg TCGE expr_alg .
+
+    $default  reduce using rule 32 (expr)
+
+
+state 78
+
+   36 expr_alg: term TPLUS expr_alg .
+
+    $default  reduce using rule 36 (expr_alg)
+
+
+state 79
+
+   37 expr_alg: term TMINUS expr_alg .
+
+    $default  reduce using rule 37 (expr_alg)
+
+
+state 80
+
+   34 expr: factor TEQUAL expr .
+
+    $default  reduce using rule 34 (expr)
+
+
+state 81
+
+   39 term: factor TMUL term .
+
+    $default  reduce using rule 39 (term)
+
+
+state 82
+
+   40 term: factor TDIV term .
+
+    $default  reduce using rule 40 (term)
+
+
+state 83
+
+    8 matched_stmt: IF TLPAREN expr TRPAREN . matched_stmt ELSE matched_stmt
+   16 open_stmt: IF TLPAREN expr TRPAREN . stmt
+   17          | IF TLPAREN expr TRPAREN . matched_stmt ELSE open_stmt
+
+    INT          shift, and go to state 10
+    CHAR         shift, and go to state 11
+    FLOAT        shift, and go to state 12
+    DOUBLE       shift, and go to state 13
+    IF           shift, and go to state 14
+    WHILE        shift, and go to state 15
+    FOR          shift, and go to state 16
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TLBRACE      shift, and go to state 7
+    TSEMICOLON   shift, and go to state 8
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+    TREAD        shift, and go to state 23
+    TWRITE       shift, and go to state 24
+
+    comp_stmt     go to state 25
+    stmt          go to state 90
+    matched_stmt  go to state 91
+    open_stmt     go to state 29
+    type          go to state 30
+    expr          go to state 31
+    expr_alg      go to state 32
+    term          go to state 33
+    factor        go to state 34
+    identifier    go to state 35
+
+
+state 84
+
+   14 matched_stmt: WHILE TLPAREN expr TRPAREN . comp_stmt
+
+    TLBRACE     shift, and go to state 7
+    TSEMICOLON  shift, and go to state 8
+
+    comp_stmt  go to state 92
+
+
+state 85
+
+   15 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON . optional_expr TSEMICOLON optional_expr TRPAREN comp_stmt
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    $default  reduce using rule 27 (optional_expr)
+
+    optional_expr  go to state 93
+    expr           go to state 64
+    expr_alg       go to state 32
+    term           go to state 33
+    factor         go to state 34
+    identifier     go to state 35
+
+
+state 86
+
+   12 matched_stmt: TREAD TLPAREN identifier TRPAREN . TSEMICOLON
+
+    TSEMICOLON  shift, and go to state 94
+
+
+state 87
+
+   13 matched_stmt: TWRITE TLPAREN expr TRPAREN . TSEMICOLON
+
+    TSEMICOLON  shift, and go to state 95
+
+
+state 88
+
+   23 args_list: decl_assign_expr TCOMMA args_list .
+
+    $default  reduce using rule 23 (args_list)
+
+
+state 89
+
+   24 decl_assign_expr: identifier TEQUAL expr .
+
+    $default  reduce using rule 24 (decl_assign_expr)
+
+
+state 90
+
+   16 open_stmt: IF TLPAREN expr TRPAREN stmt .
+
+    $default  reduce using rule 16 (open_stmt)
+
+
+state 91
+
+    6 stmt: matched_stmt .
+    8 matched_stmt: IF TLPAREN expr TRPAREN matched_stmt . ELSE matched_stmt
+   17 open_stmt: IF TLPAREN expr TRPAREN matched_stmt . ELSE open_stmt
+
+    ELSE  shift, and go to state 96
+
+    $default  reduce using rule 6 (stmt)
+
+
+state 92
+
+   14 matched_stmt: WHILE TLPAREN expr TRPAREN comp_stmt .
+
+    $default  reduce using rule 14 (matched_stmt)
+
+
+state 93
+
+   15 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr . TSEMICOLON optional_expr TRPAREN comp_stmt
+
+    TSEMICOLON  shift, and go to state 97
+
+
+state 94
+
+   12 matched_stmt: TREAD TLPAREN identifier TRPAREN TSEMICOLON .
+
+    $default  reduce using rule 12 (matched_stmt)
+
+
+state 95
+
+   13 matched_stmt: TWRITE TLPAREN expr TRPAREN TSEMICOLON .
+
+    $default  reduce using rule 13 (matched_stmt)
+
+
+state 96
+
+    8 matched_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE . matched_stmt
+   17 open_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE . open_stmt
+
+    INT          shift, and go to state 10
+    CHAR         shift, and go to state 11
+    FLOAT        shift, and go to state 12
+    DOUBLE       shift, and go to state 13
+    IF           shift, and go to state 14
+    WHILE        shift, and go to state 15
+    FOR          shift, and go to state 16
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TLBRACE      shift, and go to state 7
+    TSEMICOLON   shift, and go to state 8
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+    TREAD        shift, and go to state 23
+    TWRITE       shift, and go to state 24
+
+    comp_stmt     go to state 25
+    matched_stmt  go to state 98
+    open_stmt     go to state 99
+    type          go to state 30
+    expr          go to state 31
+    expr_alg      go to state 32
+    term          go to state 33
+    factor        go to state 34
+    identifier    go to state 35
+
+
+state 97
+
+   15 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON . optional_expr TRPAREN comp_stmt
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TCHAR        shift, and go to state 19
+    TLPAREN      shift, and go to state 20
+    TPLUS        shift, and go to state 21
+    TMINUS       shift, and go to state 22
+
+    $default  reduce using rule 27 (optional_expr)
+
+    optional_expr  go to state 100
+    expr           go to state 64
+    expr_alg       go to state 32
+    term           go to state 33
+    factor         go to state 34
+    identifier     go to state 35
+
+
+state 98
+
+    8 matched_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt .
+
+    $default  reduce using rule 8 (matched_stmt)
+
+
+state 99
+
+   17 open_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE open_stmt .
+
+    $default  reduce using rule 17 (open_stmt)
+
+
+state 100
+
+   15 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr . TRPAREN comp_stmt
+
+    TRPAREN  shift, and go to state 101
+
+
+state 101
+
+   15 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN . comp_stmt
+
+    TLBRACE     shift, and go to state 7
+    TSEMICOLON  shift, and go to state 8
+
+    comp_stmt  go to state 102
+
+
+state 102
+
+   15 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN comp_stmt .
+
+    $default  reduce using rule 15 (matched_stmt)
