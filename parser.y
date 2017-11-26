@@ -36,9 +36,10 @@
 %token <str> TIDENTIFIER TINTEGER TDOUBLE TCHAR
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL
 %token <token> TLPAREN TRPAREN TLBRACE TRBRACE TCOMMA TDOT TSEMICOLON
-%token <token> TPLUS TMINUS TMUL TDIV
+%token <token> TPLUS TMINUS TMUL TDIV TMOD
 %token <token> TREAD TWRITE
 %token <token> TNOT TAND TOR
+%token <token> TBNOT TBAND TBOR
 
 /* Define the type of node our nonterminal symbols represent.
    The types refer to the %union declaration above. Ex: when
@@ -193,6 +194,9 @@ term : factor TMUL term { $<expr>$ = new Node("EXPR", "MUL");
                           $<expr>$->Children.push_back($<factor>1);
                           $<expr>$->Children.push_back($<term>3); }
      | factor TDIV term { $<expr>$ = new Node("EXPR", "DIV");
+                          $<expr>$->Children.push_back($<factor>1);
+                          $<expr>$->Children.push_back($<term>3); }
+     | factor TMOD term { $<expr>$ = new Node("EXPR", "MOD");
                           $<expr>$->Children.push_back($<factor>1);
                           $<expr>$->Children.push_back($<term>3); }
      | factor { $<term>$ = $<term>1; }

@@ -36,6 +36,9 @@ write                   return TWRITE;
 "!"                     return TNOT;
 "&&"                    return TAND;
 "||"                    return TOR;
+"~"                     return TBNOT;
+"&"                     return TBAND;
+"|"                     return TBOR;
 "="                     return TEQUAL;
 "=="                    return TCEQ;
 "!="                    return TCNE;
@@ -53,6 +56,7 @@ write                   return TWRITE;
 "-"                     return TMINUS;
 "*"                     return TMUL;
 "/"                     return TDIV;
+"%"                     return TMOD;
 ";"                     return TSEMICOLON;
 
 \n						 		|
