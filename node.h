@@ -17,16 +17,6 @@ public:
   }
 };
 
-/*=====变量符号表========================*/
-/*建立变量符号表*/
-void newvar(int num,...);
-
-/*查找变量是否已经定义,是返回1，否返回0*/
-int  exitvar(struct Node*tp);
-
-/*查找变量类型*/
-char* typevar(struct Node*tp);
-
 // class CodeGenContext;
 /* class NStatement;
 class NExpression;
