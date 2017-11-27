@@ -39,14 +39,15 @@
 %token <token> TPLUS TMINUS TMUL TDIV TMOD
 %token <token> TREAD TWRITE
 %token <token> TNOT TAND TOR
-%token <token> TBNOT TBAND TBOR
+%token <token> TBNOT TBAND TBOR TBXOR
+%token <token> TBLEFT TBRIGHT
 
 /* Define the type of node our nonterminal symbols represent.
    The types refer to the %union declaration above. Ex: when
    we call an ident (defined by union type ident) we are really
    calling an (NIdentifier*). It makes the compiler happy.
  */
-%type <expr> expr optional_expr
+%type <expr> expr expr1 expr2 expr3 expr4 expr5 expr6 expr7 expr8 optional_expr factor0
 //%type <block> program stmts block
 %type <stmt> stmt matched_stmt open_stmt
 //%type <token> comparison
@@ -54,9 +55,12 @@
 
 /* Operator precedence for mathematical operators */
 %left TPLUS TMINUS
-%left TMUL TDIV
+%left TMUL TDIV TMODE
 %left TAND TOR
+%left TBAND TBOR TBXOR
 %left TLPAREN TRPAREN TLBRACE TRBRACE TDOT
+%left TCEQ TCNE
+%left TBLEFT TBRIGHT
 %right TEQUAL
 %right TNOT
 
@@ -146,7 +150,7 @@ args_list : decl_assign_expr { $<args_list>$ = new Node("ARGS_LIST");
                                $<args_list>$->Children.insert(it, $<expr>1); }
           ;
 
-decl_assign_expr : factor TEQUAL expr_alg {
+decl_assign_expr : factor TEQUAL expr1 {
                                $<expr>$ = new Node("EXPR", "DECL_ASSIGN");
                                $<expr>$->Children.push_back($<identifier>1);
                                $<expr>$->Children.push_back($<expr>3); }
@@ -157,32 +161,77 @@ optional_expr : expr { $<expr>$ = $<expr>1; }
               | /* empty */ { $<expr>$ = new Node("OPTIONAL_EXPR", "EMPTY"); }
               ;
 
-expr : expr_alg TCEQ expr_alg { $<expr>$ = new Node("EXPR", "COMP_EQL");
-                                  $<expr>$->Children.push_back($<expr>1);
-                                  $<expr>$->Children.push_back($<expr>3); }
-       | expr_alg TCLT expr_alg { $<expr>$ = new Node("EXPR", "COMP_LT");
-                                  $<expr>$->Children.push_back($<expr>1);
-                                  $<expr>$->Children.push_back($<expr>3); }
-       | expr_alg TCGT expr_alg { $<expr>$ = new Node("EXPR", "COMP_GT");
-                                  $<expr>$->Children.push_back($<expr>1);
-                                  $<expr>$->Children.push_back($<expr>3); }
-       | expr_alg TCLE expr_alg { $<expr>$ = new Node("EXPR", "COMP_LE");
-                                  $<expr>$->Children.push_back($<expr>1);
-                                  $<expr>$->Children.push_back($<expr>3); }
-       | expr_alg TCGE expr_alg { $<expr>$ = new Node("EXPR", "COMP_GE");
-                                  $<expr>$->Children.push_back($<expr>1);
-                                  $<expr>$->Children.push_back($<expr>3); }
-       | expr_alg TCNE expr_alg { $<expr>$ = new Node("EXPR", "COMP_NE");
-                                  $<expr>$->Children.push_back($<expr>1);
-                                  $<expr>$->Children.push_back($<expr>3); }
-       | factor TEQUAL expr { $<expr>$ = new Node("EXPR", "ASSIGN");
-                                  $<expr>$->Children.push_back($<expr>1);
-                                  $<expr>$->Children.push_back($<expr>3); }
-       | expr_alg { $<expr>$ = $<expr>1; }
-       | type args_list { $<expr>$ = new Node("EXPR", "DECL");
-                          $<expr>$->Children.push_back($<type>1);
-                          $<expr>$->Children.push_back($<expr>2); }
+expr : expr1 TEQUAL expr { $<expr>$ = new Node("EXPR", "ASSIGN");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+     | expr1 { $<expr>$ = $<expr>1; }
+     | type args_list { $<expr>$ = new Node("EXPR", "DECL");
+                        $<expr>$->Children.push_back($<type>1);
+                        $<expr>$->Children.push_back($<expr>2); }
+     ;
+
+expr1 : expr2 TOR expr1 { $<expr>$ = new Node("EXPR", "OR");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+      | expr2 { $<expr>$ = $<expr>1; }
+      ;
+
+expr2 : expr3 TAND expr2 { $<expr>$ = new Node("EXPR", "AND");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+      | expr3 { $<expr>$ = $<expr>1; }
+      ;
+
+expr3 : expr4 TBOR expr3 { $<expr>$ = new Node("EXPR", "BOR");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+      | expr4 { $<expr>$ = $<expr>1; }
+      ;
+
+expr4 : expr5 TBXOR expr4 { $<expr>$ = new Node("EXPR", "BXOR");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+      | expr5 { $<expr>$ = $<expr>1; }
+      ;
+
+expr5 : expr6 TBAND expr5 { $<expr>$ = new Node("EXPR", "TBAND");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+      | expr6 { $<expr>$ = $<expr>1; }
+      ;
+
+expr6 : expr7 TCEQ expr6 { $<expr>$ = new Node("EXPR", "COMP_EQL");
+                           $<expr>$->Children.push_back($<expr>1);
+                           $<expr>$->Children.push_back($<expr>3); }
+       | expr7 TCNE expr6 { $<expr>$ = new Node("EXPR", "COMP_NE");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+       | expr7 { $<expr>$ = $<expr>1; }
        ;
+
+expr7 : expr8 TCLT expr7 { $<expr>$ = new Node("EXPR", "COMP_LT");
+                           $<expr>$->Children.push_back($<expr>1);
+                           $<expr>$->Children.push_back($<expr>3); }
+       | expr8 TCGT expr7 { $<expr>$ = new Node("EXPR", "COMP_GT");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+       | expr8 TCLE expr7 { $<expr>$ = new Node("EXPR", "COMP_LE");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+       | expr8 TCGE expr7 { $<expr>$ = new Node("EXPR", "COMP_GE");
+                            $<expr>$->Children.push_back($<expr>1);
+                            $<expr>$->Children.push_back($<expr>3); }
+       | expr8 { $<expr>$ = $<expr>1; }
+      ;
+
+expr8 : expr_alg TBLEFT expr8 { $<expr>$ = new Node("EXPR", "BLEFT");
+                                $<expr>$->Children.push_back($<expr>1);
+                                $<expr>$->Children.push_back($<expr>3); }
+      | expr_alg TBRIGHT expr8 { $<expr>$ = new Node("EXPR", "BRIGHT");
+                                 $<expr>$->Children.push_back($<expr>1);
+                                 $<expr>$->Children.push_back($<expr>3); }
+      | expr_alg { $<expr>$ = $<expr>1; }
+      ;
 
 expr_alg : term TPLUS expr_alg { $<expr>$ = new Node("EXPR", "ADD");
                                  $<expr>$->Children.push_back($<term>1);
@@ -205,7 +254,14 @@ term : factor TMUL term { $<expr>$ = new Node("EXPR", "MUL");
      | factor { $<term>$ = $<term>1; }
      ;
 
-factor : TLPAREN expr TRPAREN { $<expr>$ = new Node("EXPR", "PARENED");
+factor : TNOT factor0 { $<expr>$ = new Node("EXPR", "NOT");
+                        $<expr>$->Children.push_back($<expr>2); }
+       | TBNOT factor0 { $<expr>$ = new Node("EXPR", "BNOT");
+                         $<expr>$->Children.push_back($<expr>2); }
+       | factor0
+       ;
+
+factor0 : TLPAREN expr TRPAREN { $<expr>$ = new Node("EXPR", "PARENED");
                                 $<expr>$->Children.push_back($<expr>2); }
        | identifier { $<factor>$ = $<expr>1; }
        | TINTEGER { $<factor>$ = new Node("VAL", $1); }

@@ -1,12 +1,7 @@
 Terminals unused in grammar
 
    TDOT
-   TNOT
-   TAND
-   TOR
-   TBNOT
-   TBAND
-   TBOR
+   TMODE
 
 
 语法
@@ -43,40 +38,67 @@ Terminals unused in grammar
    21 args_list: decl_assign_expr
    22          | decl_assign_expr TCOMMA args_list
 
-   23 decl_assign_expr: factor TEQUAL expr_alg
+   23 decl_assign_expr: factor TEQUAL expr1
    24                 | factor
 
    25 optional_expr: expr
    26              | %empty
 
-   27 expr: expr_alg TCEQ expr_alg
-   28     | expr_alg TCLT expr_alg
-   29     | expr_alg TCGT expr_alg
-   30     | expr_alg TCLE expr_alg
-   31     | expr_alg TCGE expr_alg
-   32     | expr_alg TCNE expr_alg
-   33     | factor TEQUAL expr
-   34     | expr_alg
-   35     | type args_list
+   27 expr: expr1 TEQUAL expr
+   28     | expr1
+   29     | type args_list
 
-   36 expr_alg: term TPLUS expr_alg
-   37         | term TMINUS expr_alg
-   38         | term
+   30 expr1: expr2 TOR expr1
+   31      | expr2
 
-   39 term: factor TMUL term
-   40     | factor TDIV term
-   41     | factor TMOD term
-   42     | factor
+   32 expr2: expr3 TAND expr2
+   33      | expr3
 
-   43 factor: TLPAREN expr TRPAREN
-   44       | identifier
-   45       | TINTEGER
-   46       | TDOUBLE
-   47       | TCHAR
-   48       | TMINUS TINTEGER
-   49       | TPLUS TINTEGER
+   34 expr3: expr4 TBOR expr3
+   35      | expr4
 
-   50 identifier: TIDENTIFIER
+   36 expr4: expr5 TBXOR expr4
+   37      | expr5
+
+   38 expr5: expr6 TBAND expr5
+   39      | expr6
+
+   40 expr6: expr7 TCEQ expr6
+   41      | expr7 TCNE expr6
+   42      | expr7
+
+   43 expr7: expr8 TCLT expr7
+   44      | expr8 TCGT expr7
+   45      | expr8 TCLE expr7
+   46      | expr8 TCGE expr7
+   47      | expr8
+
+   48 expr8: expr_alg TBLEFT expr8
+   49      | expr_alg TBRIGHT expr8
+   50      | expr_alg
+
+   51 expr_alg: term TPLUS expr_alg
+   52         | term TMINUS expr_alg
+   53         | term
+
+   54 term: factor TMUL term
+   55     | factor TDIV term
+   56     | factor TMOD term
+   57     | factor
+
+   58 factor: TNOT factor0
+   59       | TBNOT factor0
+   60       | factor0
+
+   61 factor0: TLPAREN expr TRPAREN
+   62        | identifier
+   63        | TINTEGER
+   64        | TDOUBLE
+   65        | TCHAR
+   66        | TMINUS TINTEGER
+   67        | TPLUS TINTEGER
+
+   68 identifier: TIDENTIFIER
 
 
 Terminals, with rules where they appear
@@ -91,74 +113,95 @@ IF (262) 8 15 16
 ELSE (263) 8 16
 WHILE (264) 13
 FOR (265) 14
-TIDENTIFIER (266) 1 50
-TINTEGER (267) 45 48 49
-TDOUBLE (268) 46
-TCHAR (269) 47
-TCEQ (270) 27
-TCNE (271) 32
-TCLT (272) 28
-TCLE (273) 30
-TCGT (274) 29
-TCGE (275) 31
-TEQUAL (276) 23 33
-TLPAREN (277) 1 8 11 12 13 14 15 16 43
-TRPAREN (278) 1 8 11 12 13 14 15 16 43
+TIDENTIFIER (266) 1 68
+TINTEGER (267) 63 66 67
+TDOUBLE (268) 64
+TCHAR (269) 65
+TCEQ (270) 40
+TCNE (271) 41
+TCLT (272) 43
+TCLE (273) 45
+TCGT (274) 44
+TCGE (275) 46
+TEQUAL (276) 23 27
+TLPAREN (277) 1 8 11 12 13 14 15 16 61
+TRPAREN (278) 1 8 11 12 13 14 15 16 61
 TLBRACE (279) 2
 TRBRACE (280) 2
 TCOMMA (281) 22
 TDOT (282)
 TSEMICOLON (283) 3 9 11 12 14
-TPLUS (284) 36 49
-TMINUS (285) 37 48
-TMUL (286) 39
-TDIV (287) 40
-TMOD (288) 41
+TPLUS (284) 51 67
+TMINUS (285) 52 66
+TMUL (286) 54
+TDIV (287) 55
+TMOD (288) 56
 TREAD (289) 11
 TWRITE (290) 12
-TNOT (291)
-TAND (292)
-TOR (293)
-TBNOT (294)
-TBAND (295)
-TBOR (296)
+TNOT (291) 58
+TAND (292) 32
+TOR (293) 30
+TBNOT (294) 59
+TBAND (295) 38
+TBOR (296) 34
+TBXOR (297) 36
+TBLEFT (298) 48
+TBRIGHT (299) 49
+TMODE (300)
 
 
 Nonterminals, with rules where they appear
 
-$accept (42)
+$accept (46)
     左： 0
-start (43)
+start (47)
     左： 1, 右： 0
-comp_stmt (44)
+comp_stmt (48)
     左： 2 3, 右： 1 10
-stmts (45)
+stmts (49)
     左： 4 5, 右： 2 4
-stmt (46)
+stmt (50)
     左： 6 7, 右： 4 15
-matched_stmt (47)
+matched_stmt (51)
     左： 8 9 10 11 12 13 14, 右： 6 8 13 14 16
-open_stmt (48)
+open_stmt (52)
     左： 15 16, 右： 7 16
-type (49)
-    左： 17 18 19 20, 右： 35
-args_list (50)
-    左： 21 22, 右： 22 35
-decl_assign_expr (51)
+type (53)
+    左： 17 18 19 20, 右： 29
+args_list (54)
+    左： 21 22, 右： 22 29
+decl_assign_expr (55)
     左： 23 24, 右： 21 22
-optional_expr (52)
+optional_expr (56)
     左： 25 26, 右： 14
-expr (53)
-    左： 27 28 29 30 31 32 33 34 35, 右： 8 9 12 13 15 16 25 33
-    43
-expr_alg (54)
-    左： 36 37 38, 右： 23 27 28 29 30 31 32 34 36 37
-term (55)
-    左： 39 40 41 42, 右： 36 37 38 39 40 41
-factor (56)
-    左： 43 44 45 46 47 48 49, 右： 23 24 33 39 40 41 42
-identifier (57)
-    左： 50, 右： 11 44
+expr (57)
+    左： 27 28 29, 右： 8 9 12 13 15 16 25 27 61
+expr1 (58)
+    左： 30 31, 右： 23 27 28 30
+expr2 (59)
+    左： 32 33, 右： 30 31 32
+expr3 (60)
+    左： 34 35, 右： 32 33 34
+expr4 (61)
+    左： 36 37, 右： 34 35 36
+expr5 (62)
+    左： 38 39, 右： 36 37 38
+expr6 (63)
+    左： 40 41 42, 右： 38 39 40 41
+expr7 (64)
+    左： 43 44 45 46 47, 右： 40 41 42 43 44 45 46
+expr8 (65)
+    左： 48 49 50, 右： 43 44 45 46 47 48 49
+expr_alg (66)
+    左： 51 52 53, 右： 48 49 50 51 52
+term (67)
+    左： 54 55 56 57, 右： 51 52 53 54 55 56
+factor (68)
+    左： 58 59 60, 右： 23 24 54 55 56 57
+factor0 (69)
+    左： 61 62 63 64 65 66 67, 右： 58 59 60
+identifier (70)
+    左： 68, 右： 11 62
 
 
 State 0
@@ -237,20 +280,31 @@ State 7
     TMINUS       shift, and go to state 23
     TREAD        shift, and go to state 24
     TWRITE       shift, and go to state 25
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
     $default  reduce using rule 5 (stmts)
 
-    comp_stmt     转到状态 26
-    stmts         转到状态 27
-    stmt          转到状态 28
-    matched_stmt  转到状态 29
-    open_stmt     转到状态 30
-    type          转到状态 31
-    expr          转到状态 32
-    expr_alg      转到状态 33
-    term          转到状态 34
-    factor        转到状态 35
-    identifier    转到状态 36
+    comp_stmt     转到状态 28
+    stmts         转到状态 29
+    stmt          转到状态 30
+    matched_stmt  转到状态 31
+    open_stmt     转到状态 32
+    type          转到状态 33
+    expr          转到状态 34
+    expr1         转到状态 35
+    expr2         转到状态 36
+    expr3         转到状态 37
+    expr4         转到状态 38
+    expr5         转到状态 39
+    expr6         转到状态 40
+    expr7         转到状态 41
+    expr8         转到状态 42
+    expr_alg      转到状态 43
+    term          转到状态 44
+    factor        转到状态 45
+    factor0       转到状态 46
+    identifier    转到状态 47
 
 
 State 8
@@ -301,54 +355,54 @@ State 14
    15 open_stmt: IF . TLPAREN expr TRPAREN stmt
    16          | IF . TLPAREN expr TRPAREN matched_stmt ELSE open_stmt
 
-    TLPAREN  shift, and go to state 37
+    TLPAREN  shift, and go to state 48
 
 
 State 15
 
    13 matched_stmt: WHILE . TLPAREN expr TRPAREN matched_stmt
 
-    TLPAREN  shift, and go to state 38
+    TLPAREN  shift, and go to state 49
 
 
 State 16
 
    14 matched_stmt: FOR . TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN matched_stmt
 
-    TLPAREN  shift, and go to state 39
+    TLPAREN  shift, and go to state 50
 
 
 State 17
 
-   50 identifier: TIDENTIFIER .
+   68 identifier: TIDENTIFIER .
 
-    $default  reduce using rule 50 (identifier)
+    $default  reduce using rule 68 (identifier)
 
 
 State 18
 
-   45 factor: TINTEGER .
+   63 factor0: TINTEGER .
 
-    $default  reduce using rule 45 (factor)
+    $default  reduce using rule 63 (factor0)
 
 
 State 19
 
-   46 factor: TDOUBLE .
+   64 factor0: TDOUBLE .
 
-    $default  reduce using rule 46 (factor)
+    $default  reduce using rule 64 (factor0)
 
 
 State 20
 
-   47 factor: TCHAR .
+   65 factor0: TCHAR .
 
-    $default  reduce using rule 47 (factor)
+    $default  reduce using rule 65 (factor0)
 
 
 State 21
 
-   43 factor: TLPAREN . expr TRPAREN
+   61 factor0: TLPAREN . expr TRPAREN
 
     INT          shift, and go to state 10
     CHAR         shift, and go to state 11
@@ -361,58 +415,101 @@ State 21
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    type        转到状态 31
-    expr        转到状态 40
-    expr_alg    转到状态 33
-    term        转到状态 34
-    factor      转到状态 35
-    identifier  转到状态 36
+    type        转到状态 33
+    expr        转到状态 51
+    expr1       转到状态 35
+    expr2       转到状态 36
+    expr3       转到状态 37
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
 
 
 State 22
 
-   49 factor: TPLUS . TINTEGER
+   67 factor0: TPLUS . TINTEGER
 
-    TINTEGER  shift, and go to state 41
+    TINTEGER  shift, and go to state 52
 
 
 State 23
 
-   48 factor: TMINUS . TINTEGER
+   66 factor0: TMINUS . TINTEGER
 
-    TINTEGER  shift, and go to state 42
+    TINTEGER  shift, and go to state 53
 
 
 State 24
 
    11 matched_stmt: TREAD . TLPAREN identifier TRPAREN TSEMICOLON
 
-    TLPAREN  shift, and go to state 43
+    TLPAREN  shift, and go to state 54
 
 
 State 25
 
    12 matched_stmt: TWRITE . TLPAREN expr TRPAREN TSEMICOLON
 
-    TLPAREN  shift, and go to state 44
+    TLPAREN  shift, and go to state 55
 
 
 State 26
+
+   58 factor: TNOT . factor0
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+
+    factor0     转到状态 56
+    identifier  转到状态 47
+
+
+State 27
+
+   59 factor: TBNOT . factor0
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+
+    factor0     转到状态 57
+    identifier  转到状态 47
+
+
+State 28
 
    10 matched_stmt: comp_stmt .
 
     $default  reduce using rule 10 (matched_stmt)
 
 
-State 27
+State 29
 
     2 comp_stmt: TLBRACE stmts . TRBRACE
 
-    TRBRACE  shift, and go to state 45
+    TRBRACE  shift, and go to state 58
 
 
-State 28
+State 30
 
     4 stmts: stmt . stmts
 
@@ -434,39 +531,50 @@ State 28
     TMINUS       shift, and go to state 23
     TREAD        shift, and go to state 24
     TWRITE       shift, and go to state 25
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
     $default  reduce using rule 5 (stmts)
 
-    comp_stmt     转到状态 26
-    stmts         转到状态 46
-    stmt          转到状态 28
-    matched_stmt  转到状态 29
-    open_stmt     转到状态 30
-    type          转到状态 31
-    expr          转到状态 32
-    expr_alg      转到状态 33
-    term          转到状态 34
-    factor        转到状态 35
-    identifier    转到状态 36
+    comp_stmt     转到状态 28
+    stmts         转到状态 59
+    stmt          转到状态 30
+    matched_stmt  转到状态 31
+    open_stmt     转到状态 32
+    type          转到状态 33
+    expr          转到状态 34
+    expr1         转到状态 35
+    expr2         转到状态 36
+    expr3         转到状态 37
+    expr4         转到状态 38
+    expr5         转到状态 39
+    expr6         转到状态 40
+    expr7         转到状态 41
+    expr8         转到状态 42
+    expr_alg      转到状态 43
+    term          转到状态 44
+    factor        转到状态 45
+    factor0       转到状态 46
+    identifier    转到状态 47
 
 
-State 29
+State 31
 
     6 stmt: matched_stmt .
 
     $default  reduce using rule 6 (stmt)
 
 
-State 30
+State 32
 
     7 stmt: open_stmt .
 
     $default  reduce using rule 7 (stmt)
 
 
-State 31
+State 33
 
-   35 expr: type . args_list
+   29 expr: type . args_list
 
     TIDENTIFIER  shift, and go to state 17
     TINTEGER     shift, and go to state 18
@@ -475,76 +583,164 @@ State 31
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    args_list         转到状态 47
-    decl_assign_expr  转到状态 48
-    factor            转到状态 49
-    identifier        转到状态 36
-
-
-State 32
-
-    9 matched_stmt: expr . TSEMICOLON
-
-    TSEMICOLON  shift, and go to state 50
-
-
-State 33
-
-   27 expr: expr_alg . TCEQ expr_alg
-   28     | expr_alg . TCLT expr_alg
-   29     | expr_alg . TCGT expr_alg
-   30     | expr_alg . TCLE expr_alg
-   31     | expr_alg . TCGE expr_alg
-   32     | expr_alg . TCNE expr_alg
-   34     | expr_alg .
-
-    TCEQ  shift, and go to state 51
-    TCNE  shift, and go to state 52
-    TCLT  shift, and go to state 53
-    TCLE  shift, and go to state 54
-    TCGT  shift, and go to state 55
-    TCGE  shift, and go to state 56
-
-    $default  reduce using rule 34 (expr)
+    args_list         转到状态 60
+    decl_assign_expr  转到状态 61
+    factor            转到状态 62
+    factor0           转到状态 46
+    identifier        转到状态 47
 
 
 State 34
 
-   36 expr_alg: term . TPLUS expr_alg
-   37         | term . TMINUS expr_alg
-   38         | term .
+    9 matched_stmt: expr . TSEMICOLON
 
-    TPLUS   shift, and go to state 57
-    TMINUS  shift, and go to state 58
-
-    $default  reduce using rule 38 (expr_alg)
+    TSEMICOLON  shift, and go to state 63
 
 
 State 35
 
-   33 expr: factor . TEQUAL expr
-   39 term: factor . TMUL term
-   40     | factor . TDIV term
-   41     | factor . TMOD term
-   42     | factor .
+   27 expr: expr1 . TEQUAL expr
+   28     | expr1 .
 
-    TEQUAL  shift, and go to state 59
-    TMUL    shift, and go to state 60
-    TDIV    shift, and go to state 61
-    TMOD    shift, and go to state 62
+    TEQUAL  shift, and go to state 64
 
-    $default  reduce using rule 42 (term)
+    $default  reduce using rule 28 (expr)
 
 
 State 36
 
-   44 factor: identifier .
+   30 expr1: expr2 . TOR expr1
+   31      | expr2 .
 
-    $default  reduce using rule 44 (factor)
+    TOR  shift, and go to state 65
+
+    $default  reduce using rule 31 (expr1)
 
 
 State 37
+
+   32 expr2: expr3 . TAND expr2
+   33      | expr3 .
+
+    TAND  shift, and go to state 66
+
+    $default  reduce using rule 33 (expr2)
+
+
+State 38
+
+   34 expr3: expr4 . TBOR expr3
+   35      | expr4 .
+
+    TBOR  shift, and go to state 67
+
+    $default  reduce using rule 35 (expr3)
+
+
+State 39
+
+   36 expr4: expr5 . TBXOR expr4
+   37      | expr5 .
+
+    TBXOR  shift, and go to state 68
+
+    $default  reduce using rule 37 (expr4)
+
+
+State 40
+
+   38 expr5: expr6 . TBAND expr5
+   39      | expr6 .
+
+    TBAND  shift, and go to state 69
+
+    $default  reduce using rule 39 (expr5)
+
+
+State 41
+
+   40 expr6: expr7 . TCEQ expr6
+   41      | expr7 . TCNE expr6
+   42      | expr7 .
+
+    TCEQ  shift, and go to state 70
+    TCNE  shift, and go to state 71
+
+    $default  reduce using rule 42 (expr6)
+
+
+State 42
+
+   43 expr7: expr8 . TCLT expr7
+   44      | expr8 . TCGT expr7
+   45      | expr8 . TCLE expr7
+   46      | expr8 . TCGE expr7
+   47      | expr8 .
+
+    TCLT  shift, and go to state 72
+    TCLE  shift, and go to state 73
+    TCGT  shift, and go to state 74
+    TCGE  shift, and go to state 75
+
+    $default  reduce using rule 47 (expr7)
+
+
+State 43
+
+   48 expr8: expr_alg . TBLEFT expr8
+   49      | expr_alg . TBRIGHT expr8
+   50      | expr_alg .
+
+    TBLEFT   shift, and go to state 76
+    TBRIGHT  shift, and go to state 77
+
+    $default  reduce using rule 50 (expr8)
+
+
+State 44
+
+   51 expr_alg: term . TPLUS expr_alg
+   52         | term . TMINUS expr_alg
+   53         | term .
+
+    TPLUS   shift, and go to state 78
+    TMINUS  shift, and go to state 79
+
+    $default  reduce using rule 53 (expr_alg)
+
+
+State 45
+
+   54 term: factor . TMUL term
+   55     | factor . TDIV term
+   56     | factor . TMOD term
+   57     | factor .
+
+    TMUL  shift, and go to state 80
+    TDIV  shift, and go to state 81
+    TMOD  shift, and go to state 82
+
+    $default  reduce using rule 57 (term)
+
+
+State 46
+
+   60 factor: factor0 .
+
+    $default  reduce using rule 60 (factor)
+
+
+State 47
+
+   62 factor0: identifier .
+
+    $default  reduce using rule 62 (factor0)
+
+
+State 48
 
     8 matched_stmt: IF TLPAREN . expr TRPAREN matched_stmt ELSE matched_stmt
    15 open_stmt: IF TLPAREN . expr TRPAREN stmt
@@ -561,16 +757,27 @@ State 37
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    type        转到状态 31
-    expr        转到状态 63
-    expr_alg    转到状态 33
-    term        转到状态 34
-    factor      转到状态 35
-    identifier  转到状态 36
+    type        转到状态 33
+    expr        转到状态 83
+    expr1       转到状态 35
+    expr2       转到状态 36
+    expr3       转到状态 37
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
 
 
-State 38
+State 49
 
    13 matched_stmt: WHILE TLPAREN . expr TRPAREN matched_stmt
 
@@ -585,16 +792,27 @@ State 38
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    type        转到状态 31
-    expr        转到状态 64
-    expr_alg    转到状态 33
-    term        转到状态 34
-    factor      转到状态 35
-    identifier  转到状态 36
+    type        转到状态 33
+    expr        转到状态 84
+    expr1       转到状态 35
+    expr2       转到状态 36
+    expr3       转到状态 37
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
 
 
-State 39
+State 50
 
    14 matched_stmt: FOR TLPAREN . optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN matched_stmt
 
@@ -609,49 +827,60 @@ State 39
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
     $default  reduce using rule 26 (optional_expr)
 
-    type           转到状态 31
-    optional_expr  转到状态 65
-    expr           转到状态 66
-    expr_alg       转到状态 33
-    term           转到状态 34
-    factor         转到状态 35
-    identifier     转到状态 36
+    type           转到状态 33
+    optional_expr  转到状态 85
+    expr           转到状态 86
+    expr1          转到状态 35
+    expr2          转到状态 36
+    expr3          转到状态 37
+    expr4          转到状态 38
+    expr5          转到状态 39
+    expr6          转到状态 40
+    expr7          转到状态 41
+    expr8          转到状态 42
+    expr_alg       转到状态 43
+    term           转到状态 44
+    factor         转到状态 45
+    factor0        转到状态 46
+    identifier     转到状态 47
 
 
-State 40
+State 51
 
-   43 factor: TLPAREN expr . TRPAREN
+   61 factor0: TLPAREN expr . TRPAREN
 
-    TRPAREN  shift, and go to state 67
-
-
-State 41
-
-   49 factor: TPLUS TINTEGER .
-
-    $default  reduce using rule 49 (factor)
+    TRPAREN  shift, and go to state 87
 
 
-State 42
+State 52
 
-   48 factor: TMINUS TINTEGER .
+   67 factor0: TPLUS TINTEGER .
 
-    $default  reduce using rule 48 (factor)
+    $default  reduce using rule 67 (factor0)
 
 
-State 43
+State 53
+
+   66 factor0: TMINUS TINTEGER .
+
+    $default  reduce using rule 66 (factor0)
+
+
+State 54
 
    11 matched_stmt: TREAD TLPAREN . identifier TRPAREN TSEMICOLON
 
     TIDENTIFIER  shift, and go to state 17
 
-    identifier  转到状态 68
+    identifier  转到状态 88
 
 
-State 44
+State 55
 
    12 matched_stmt: TWRITE TLPAREN . expr TRPAREN TSEMICOLON
 
@@ -666,210 +895,91 @@ State 44
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    type        转到状态 31
-    expr        转到状态 69
-    expr_alg    转到状态 33
-    term        转到状态 34
-    factor      转到状态 35
-    identifier  转到状态 36
+    type        转到状态 33
+    expr        转到状态 89
+    expr1       转到状态 35
+    expr2       转到状态 36
+    expr3       转到状态 37
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
 
 
-State 45
+State 56
+
+   58 factor: TNOT factor0 .
+
+    $default  reduce using rule 58 (factor)
+
+
+State 57
+
+   59 factor: TBNOT factor0 .
+
+    $default  reduce using rule 59 (factor)
+
+
+State 58
 
     2 comp_stmt: TLBRACE stmts TRBRACE .
 
     $default  reduce using rule 2 (comp_stmt)
 
 
-State 46
+State 59
 
     4 stmts: stmt stmts .
 
     $default  reduce using rule 4 (stmts)
 
 
-State 47
+State 60
 
-   35 expr: type args_list .
+   29 expr: type args_list .
 
-    $default  reduce using rule 35 (expr)
+    $default  reduce using rule 29 (expr)
 
 
-State 48
+State 61
 
    21 args_list: decl_assign_expr .
    22          | decl_assign_expr . TCOMMA args_list
 
-    TCOMMA  shift, and go to state 70
+    TCOMMA  shift, and go to state 90
 
     $default  reduce using rule 21 (args_list)
 
 
-State 49
+State 62
 
-   23 decl_assign_expr: factor . TEQUAL expr_alg
+   23 decl_assign_expr: factor . TEQUAL expr1
    24                 | factor .
 
-    TEQUAL  shift, and go to state 71
+    TEQUAL  shift, and go to state 91
 
     $default  reduce using rule 24 (decl_assign_expr)
 
 
-State 50
+State 63
 
     9 matched_stmt: expr TSEMICOLON .
 
     $default  reduce using rule 9 (matched_stmt)
 
 
-State 51
+State 64
 
-   27 expr: expr_alg TCEQ . expr_alg
-
-    TIDENTIFIER  shift, and go to state 17
-    TINTEGER     shift, and go to state 18
-    TDOUBLE      shift, and go to state 19
-    TCHAR        shift, and go to state 20
-    TLPAREN      shift, and go to state 21
-    TPLUS        shift, and go to state 22
-    TMINUS       shift, and go to state 23
-
-    expr_alg    转到状态 72
-    term        转到状态 34
-    factor      转到状态 73
-    identifier  转到状态 36
-
-
-State 52
-
-   32 expr: expr_alg TCNE . expr_alg
-
-    TIDENTIFIER  shift, and go to state 17
-    TINTEGER     shift, and go to state 18
-    TDOUBLE      shift, and go to state 19
-    TCHAR        shift, and go to state 20
-    TLPAREN      shift, and go to state 21
-    TPLUS        shift, and go to state 22
-    TMINUS       shift, and go to state 23
-
-    expr_alg    转到状态 74
-    term        转到状态 34
-    factor      转到状态 73
-    identifier  转到状态 36
-
-
-State 53
-
-   28 expr: expr_alg TCLT . expr_alg
-
-    TIDENTIFIER  shift, and go to state 17
-    TINTEGER     shift, and go to state 18
-    TDOUBLE      shift, and go to state 19
-    TCHAR        shift, and go to state 20
-    TLPAREN      shift, and go to state 21
-    TPLUS        shift, and go to state 22
-    TMINUS       shift, and go to state 23
-
-    expr_alg    转到状态 75
-    term        转到状态 34
-    factor      转到状态 73
-    identifier  转到状态 36
-
-
-State 54
-
-   30 expr: expr_alg TCLE . expr_alg
-
-    TIDENTIFIER  shift, and go to state 17
-    TINTEGER     shift, and go to state 18
-    TDOUBLE      shift, and go to state 19
-    TCHAR        shift, and go to state 20
-    TLPAREN      shift, and go to state 21
-    TPLUS        shift, and go to state 22
-    TMINUS       shift, and go to state 23
-
-    expr_alg    转到状态 76
-    term        转到状态 34
-    factor      转到状态 73
-    identifier  转到状态 36
-
-
-State 55
-
-   29 expr: expr_alg TCGT . expr_alg
-
-    TIDENTIFIER  shift, and go to state 17
-    TINTEGER     shift, and go to state 18
-    TDOUBLE      shift, and go to state 19
-    TCHAR        shift, and go to state 20
-    TLPAREN      shift, and go to state 21
-    TPLUS        shift, and go to state 22
-    TMINUS       shift, and go to state 23
-
-    expr_alg    转到状态 77
-    term        转到状态 34
-    factor      转到状态 73
-    identifier  转到状态 36
-
-
-State 56
-
-   31 expr: expr_alg TCGE . expr_alg
-
-    TIDENTIFIER  shift, and go to state 17
-    TINTEGER     shift, and go to state 18
-    TDOUBLE      shift, and go to state 19
-    TCHAR        shift, and go to state 20
-    TLPAREN      shift, and go to state 21
-    TPLUS        shift, and go to state 22
-    TMINUS       shift, and go to state 23
-
-    expr_alg    转到状态 78
-    term        转到状态 34
-    factor      转到状态 73
-    identifier  转到状态 36
-
-
-State 57
-
-   36 expr_alg: term TPLUS . expr_alg
-
-    TIDENTIFIER  shift, and go to state 17
-    TINTEGER     shift, and go to state 18
-    TDOUBLE      shift, and go to state 19
-    TCHAR        shift, and go to state 20
-    TLPAREN      shift, and go to state 21
-    TPLUS        shift, and go to state 22
-    TMINUS       shift, and go to state 23
-
-    expr_alg    转到状态 79
-    term        转到状态 34
-    factor      转到状态 73
-    identifier  转到状态 36
-
-
-State 58
-
-   37 expr_alg: term TMINUS . expr_alg
-
-    TIDENTIFIER  shift, and go to state 17
-    TINTEGER     shift, and go to state 18
-    TDOUBLE      shift, and go to state 19
-    TCHAR        shift, and go to state 20
-    TLPAREN      shift, and go to state 21
-    TPLUS        shift, and go to state 22
-    TMINUS       shift, and go to state 23
-
-    expr_alg    转到状态 80
-    term        转到状态 34
-    factor      转到状态 73
-    identifier  转到状态 36
-
-
-State 59
-
-   33 expr: factor TEQUAL . expr
+   27 expr: expr1 TEQUAL . expr
 
     INT          shift, and go to state 10
     CHAR         shift, and go to state 11
@@ -882,35 +992,29 @@ State 59
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    type        转到状态 31
-    expr        转到状态 81
-    expr_alg    转到状态 33
-    term        转到状态 34
-    factor      转到状态 35
-    identifier  转到状态 36
-
-
-State 60
-
-   39 term: factor TMUL . term
-
-    TIDENTIFIER  shift, and go to state 17
-    TINTEGER     shift, and go to state 18
-    TDOUBLE      shift, and go to state 19
-    TCHAR        shift, and go to state 20
-    TLPAREN      shift, and go to state 21
-    TPLUS        shift, and go to state 22
-    TMINUS       shift, and go to state 23
-
-    term        转到状态 82
-    factor      转到状态 73
-    identifier  转到状态 36
+    type        转到状态 33
+    expr        转到状态 92
+    expr1       转到状态 35
+    expr2       转到状态 36
+    expr3       转到状态 37
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
 
 
-State 61
+State 65
 
-   40 term: factor TDIV . term
+   30 expr1: expr2 TOR . expr1
 
     TIDENTIFIER  shift, and go to state 17
     TINTEGER     shift, and go to state 18
@@ -919,15 +1023,27 @@ State 61
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    term        转到状态 83
-    factor      转到状态 73
-    identifier  转到状态 36
+    expr1       转到状态 93
+    expr2       转到状态 36
+    expr3       转到状态 37
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
 
 
-State 62
+State 66
 
-   41 term: factor TMOD . term
+   32 expr2: expr3 TAND . expr2
 
     TIDENTIFIER  shift, and go to state 17
     TINTEGER     shift, and go to state 18
@@ -936,64 +1052,439 @@ State 62
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    term        转到状态 84
-    factor      转到状态 73
-    identifier  转到状态 36
+    expr2       转到状态 94
+    expr3       转到状态 37
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
 
 
-State 63
+State 67
+
+   34 expr3: expr4 TBOR . expr3
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr3       转到状态 95
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 68
+
+   36 expr4: expr5 TBXOR . expr4
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr4       转到状态 96
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 69
+
+   38 expr5: expr6 TBAND . expr5
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr5       转到状态 97
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 70
+
+   40 expr6: expr7 TCEQ . expr6
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr6       转到状态 98
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 71
+
+   41 expr6: expr7 TCNE . expr6
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr6       转到状态 99
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 72
+
+   43 expr7: expr8 TCLT . expr7
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr7       转到状态 100
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 73
+
+   45 expr7: expr8 TCLE . expr7
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr7       转到状态 101
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 74
+
+   44 expr7: expr8 TCGT . expr7
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr7       转到状态 102
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 75
+
+   46 expr7: expr8 TCGE . expr7
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr7       转到状态 103
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 76
+
+   48 expr8: expr_alg TBLEFT . expr8
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr8       转到状态 104
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 77
+
+   49 expr8: expr_alg TBRIGHT . expr8
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr8       转到状态 105
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 78
+
+   51 expr_alg: term TPLUS . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr_alg    转到状态 106
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 79
+
+   52 expr_alg: term TMINUS . expr_alg
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    expr_alg    转到状态 107
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 80
+
+   54 term: factor TMUL . term
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    term        转到状态 108
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 81
+
+   55 term: factor TDIV . term
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    term        转到状态 109
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 82
+
+   56 term: factor TMOD . term
+
+    TIDENTIFIER  shift, and go to state 17
+    TINTEGER     shift, and go to state 18
+    TDOUBLE      shift, and go to state 19
+    TCHAR        shift, and go to state 20
+    TLPAREN      shift, and go to state 21
+    TPLUS        shift, and go to state 22
+    TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
+
+    term        转到状态 110
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
+
+
+State 83
 
     8 matched_stmt: IF TLPAREN expr . TRPAREN matched_stmt ELSE matched_stmt
    15 open_stmt: IF TLPAREN expr . TRPAREN stmt
    16          | IF TLPAREN expr . TRPAREN matched_stmt ELSE open_stmt
 
-    TRPAREN  shift, and go to state 85
+    TRPAREN  shift, and go to state 111
 
 
-State 64
+State 84
 
    13 matched_stmt: WHILE TLPAREN expr . TRPAREN matched_stmt
 
-    TRPAREN  shift, and go to state 86
+    TRPAREN  shift, and go to state 112
 
 
-State 65
+State 85
 
    14 matched_stmt: FOR TLPAREN optional_expr . TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN matched_stmt
 
-    TSEMICOLON  shift, and go to state 87
+    TSEMICOLON  shift, and go to state 113
 
 
-State 66
+State 86
 
    25 optional_expr: expr .
 
     $default  reduce using rule 25 (optional_expr)
 
 
-State 67
+State 87
 
-   43 factor: TLPAREN expr TRPAREN .
+   61 factor0: TLPAREN expr TRPAREN .
 
-    $default  reduce using rule 43 (factor)
+    $default  reduce using rule 61 (factor0)
 
 
-State 68
+State 88
 
    11 matched_stmt: TREAD TLPAREN identifier . TRPAREN TSEMICOLON
 
-    TRPAREN  shift, and go to state 88
+    TRPAREN  shift, and go to state 114
 
 
-State 69
+State 89
 
    12 matched_stmt: TWRITE TLPAREN expr . TRPAREN TSEMICOLON
 
-    TRPAREN  shift, and go to state 89
+    TRPAREN  shift, and go to state 115
 
 
-State 70
+State 90
 
    22 args_list: decl_assign_expr TCOMMA . args_list
 
@@ -1004,16 +1495,19 @@ State 70
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    args_list         转到状态 90
-    decl_assign_expr  转到状态 48
-    factor            转到状态 49
-    identifier        转到状态 36
+    args_list         转到状态 116
+    decl_assign_expr  转到状态 61
+    factor            转到状态 62
+    factor0           转到状态 46
+    identifier        转到状态 47
 
 
-State 71
+State 91
 
-   23 decl_assign_expr: factor TEQUAL . expr_alg
+   23 decl_assign_expr: factor TEQUAL . expr1
 
     TIDENTIFIER  shift, and go to state 17
     TINTEGER     shift, and go to state 18
@@ -1022,112 +1516,158 @@ State 71
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    expr_alg    转到状态 91
-    term        转到状态 34
-    factor      转到状态 73
-    identifier  转到状态 36
+    expr1       转到状态 117
+    expr2       转到状态 36
+    expr3       转到状态 37
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
 
 
-State 72
+State 92
 
-   27 expr: expr_alg TCEQ expr_alg .
+   27 expr: expr1 TEQUAL expr .
 
     $default  reduce using rule 27 (expr)
 
 
-State 73
+State 93
 
-   39 term: factor . TMUL term
-   40     | factor . TDIV term
-   41     | factor . TMOD term
-   42     | factor .
+   30 expr1: expr2 TOR expr1 .
 
-    TMUL  shift, and go to state 60
-    TDIV  shift, and go to state 61
-    TMOD  shift, and go to state 62
-
-    $default  reduce using rule 42 (term)
+    $default  reduce using rule 30 (expr1)
 
 
-State 74
+State 94
 
-   32 expr: expr_alg TCNE expr_alg .
+   32 expr2: expr3 TAND expr2 .
 
-    $default  reduce using rule 32 (expr)
-
-
-State 75
-
-   28 expr: expr_alg TCLT expr_alg .
-
-    $default  reduce using rule 28 (expr)
+    $default  reduce using rule 32 (expr2)
 
 
-State 76
+State 95
 
-   30 expr: expr_alg TCLE expr_alg .
+   34 expr3: expr4 TBOR expr3 .
 
-    $default  reduce using rule 30 (expr)
-
-
-State 77
-
-   29 expr: expr_alg TCGT expr_alg .
-
-    $default  reduce using rule 29 (expr)
+    $default  reduce using rule 34 (expr3)
 
 
-State 78
+State 96
 
-   31 expr: expr_alg TCGE expr_alg .
+   36 expr4: expr5 TBXOR expr4 .
 
-    $default  reduce using rule 31 (expr)
-
-
-State 79
-
-   36 expr_alg: term TPLUS expr_alg .
-
-    $default  reduce using rule 36 (expr_alg)
+    $default  reduce using rule 36 (expr4)
 
 
-State 80
+State 97
 
-   37 expr_alg: term TMINUS expr_alg .
+   38 expr5: expr6 TBAND expr5 .
 
-    $default  reduce using rule 37 (expr_alg)
-
-
-State 81
-
-   33 expr: factor TEQUAL expr .
-
-    $default  reduce using rule 33 (expr)
+    $default  reduce using rule 38 (expr5)
 
 
-State 82
+State 98
 
-   39 term: factor TMUL term .
+   40 expr6: expr7 TCEQ expr6 .
 
-    $default  reduce using rule 39 (term)
-
-
-State 83
-
-   40 term: factor TDIV term .
-
-    $default  reduce using rule 40 (term)
+    $default  reduce using rule 40 (expr6)
 
 
-State 84
+State 99
 
-   41 term: factor TMOD term .
+   41 expr6: expr7 TCNE expr6 .
 
-    $default  reduce using rule 41 (term)
+    $default  reduce using rule 41 (expr6)
 
 
-State 85
+State 100
+
+   43 expr7: expr8 TCLT expr7 .
+
+    $default  reduce using rule 43 (expr7)
+
+
+State 101
+
+   45 expr7: expr8 TCLE expr7 .
+
+    $default  reduce using rule 45 (expr7)
+
+
+State 102
+
+   44 expr7: expr8 TCGT expr7 .
+
+    $default  reduce using rule 44 (expr7)
+
+
+State 103
+
+   46 expr7: expr8 TCGE expr7 .
+
+    $default  reduce using rule 46 (expr7)
+
+
+State 104
+
+   48 expr8: expr_alg TBLEFT expr8 .
+
+    $default  reduce using rule 48 (expr8)
+
+
+State 105
+
+   49 expr8: expr_alg TBRIGHT expr8 .
+
+    $default  reduce using rule 49 (expr8)
+
+
+State 106
+
+   51 expr_alg: term TPLUS expr_alg .
+
+    $default  reduce using rule 51 (expr_alg)
+
+
+State 107
+
+   52 expr_alg: term TMINUS expr_alg .
+
+    $default  reduce using rule 52 (expr_alg)
+
+
+State 108
+
+   54 term: factor TMUL term .
+
+    $default  reduce using rule 54 (term)
+
+
+State 109
+
+   55 term: factor TDIV term .
+
+    $default  reduce using rule 55 (term)
+
+
+State 110
+
+   56 term: factor TMOD term .
+
+    $default  reduce using rule 56 (term)
+
+
+State 111
 
     8 matched_stmt: IF TLPAREN expr TRPAREN . matched_stmt ELSE matched_stmt
    15 open_stmt: IF TLPAREN expr TRPAREN . stmt
@@ -1151,20 +1691,31 @@ State 85
     TMINUS       shift, and go to state 23
     TREAD        shift, and go to state 24
     TWRITE       shift, and go to state 25
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    comp_stmt     转到状态 26
-    stmt          转到状态 92
-    matched_stmt  转到状态 93
-    open_stmt     转到状态 30
-    type          转到状态 31
-    expr          转到状态 32
-    expr_alg      转到状态 33
-    term          转到状态 34
-    factor        转到状态 35
-    identifier    转到状态 36
+    comp_stmt     转到状态 28
+    stmt          转到状态 118
+    matched_stmt  转到状态 119
+    open_stmt     转到状态 32
+    type          转到状态 33
+    expr          转到状态 34
+    expr1         转到状态 35
+    expr2         转到状态 36
+    expr3         转到状态 37
+    expr4         转到状态 38
+    expr5         转到状态 39
+    expr6         转到状态 40
+    expr7         转到状态 41
+    expr8         转到状态 42
+    expr_alg      转到状态 43
+    term          转到状态 44
+    factor        转到状态 45
+    factor0       转到状态 46
+    identifier    转到状态 47
 
 
-State 86
+State 112
 
    13 matched_stmt: WHILE TLPAREN expr TRPAREN . matched_stmt
 
@@ -1172,7 +1723,7 @@ State 86
     CHAR         shift, and go to state 11
     FLOAT        shift, and go to state 12
     DOUBLE       shift, and go to state 13
-    IF           shift, and go to state 94
+    IF           shift, and go to state 120
     WHILE        shift, and go to state 15
     FOR          shift, and go to state 16
     TIDENTIFIER  shift, and go to state 17
@@ -1186,18 +1737,29 @@ State 86
     TMINUS       shift, and go to state 23
     TREAD        shift, and go to state 24
     TWRITE       shift, and go to state 25
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    comp_stmt     转到状态 26
-    matched_stmt  转到状态 95
-    type          转到状态 31
-    expr          转到状态 32
-    expr_alg      转到状态 33
-    term          转到状态 34
-    factor        转到状态 35
-    identifier    转到状态 36
+    comp_stmt     转到状态 28
+    matched_stmt  转到状态 121
+    type          转到状态 33
+    expr          转到状态 34
+    expr1         转到状态 35
+    expr2         转到状态 36
+    expr3         转到状态 37
+    expr4         转到状态 38
+    expr5         转到状态 39
+    expr6         转到状态 40
+    expr7         转到状态 41
+    expr8         转到状态 42
+    expr_alg      转到状态 43
+    term          转到状态 44
+    factor        转到状态 45
+    factor0       转到状态 46
+    identifier    转到状态 47
 
 
-State 87
+State 113
 
    14 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON . optional_expr TSEMICOLON optional_expr TRPAREN matched_stmt
 
@@ -1212,100 +1774,111 @@ State 87
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
     $default  reduce using rule 26 (optional_expr)
 
-    type           转到状态 31
-    optional_expr  转到状态 96
-    expr           转到状态 66
-    expr_alg       转到状态 33
-    term           转到状态 34
-    factor         转到状态 35
-    identifier     转到状态 36
+    type           转到状态 33
+    optional_expr  转到状态 122
+    expr           转到状态 86
+    expr1          转到状态 35
+    expr2          转到状态 36
+    expr3          转到状态 37
+    expr4          转到状态 38
+    expr5          转到状态 39
+    expr6          转到状态 40
+    expr7          转到状态 41
+    expr8          转到状态 42
+    expr_alg       转到状态 43
+    term           转到状态 44
+    factor         转到状态 45
+    factor0        转到状态 46
+    identifier     转到状态 47
 
 
-State 88
+State 114
 
    11 matched_stmt: TREAD TLPAREN identifier TRPAREN . TSEMICOLON
 
-    TSEMICOLON  shift, and go to state 97
+    TSEMICOLON  shift, and go to state 123
 
 
-State 89
+State 115
 
    12 matched_stmt: TWRITE TLPAREN expr TRPAREN . TSEMICOLON
 
-    TSEMICOLON  shift, and go to state 98
+    TSEMICOLON  shift, and go to state 124
 
 
-State 90
+State 116
 
    22 args_list: decl_assign_expr TCOMMA args_list .
 
     $default  reduce using rule 22 (args_list)
 
 
-State 91
+State 117
 
-   23 decl_assign_expr: factor TEQUAL expr_alg .
+   23 decl_assign_expr: factor TEQUAL expr1 .
 
     $default  reduce using rule 23 (decl_assign_expr)
 
 
-State 92
+State 118
 
    15 open_stmt: IF TLPAREN expr TRPAREN stmt .
 
     $default  reduce using rule 15 (open_stmt)
 
 
-State 93
+State 119
 
     6 stmt: matched_stmt .
     8 matched_stmt: IF TLPAREN expr TRPAREN matched_stmt . ELSE matched_stmt
    16 open_stmt: IF TLPAREN expr TRPAREN matched_stmt . ELSE open_stmt
 
-    ELSE  shift, and go to state 99
+    ELSE  shift, and go to state 125
 
     $default  reduce using rule 6 (stmt)
 
 
-State 94
+State 120
 
     8 matched_stmt: IF . TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt
 
-    TLPAREN  shift, and go to state 100
+    TLPAREN  shift, and go to state 126
 
 
-State 95
+State 121
 
    13 matched_stmt: WHILE TLPAREN expr TRPAREN matched_stmt .
 
     $default  reduce using rule 13 (matched_stmt)
 
 
-State 96
+State 122
 
    14 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr . TSEMICOLON optional_expr TRPAREN matched_stmt
 
-    TSEMICOLON  shift, and go to state 101
+    TSEMICOLON  shift, and go to state 127
 
 
-State 97
+State 123
 
    11 matched_stmt: TREAD TLPAREN identifier TRPAREN TSEMICOLON .
 
     $default  reduce using rule 11 (matched_stmt)
 
 
-State 98
+State 124
 
    12 matched_stmt: TWRITE TLPAREN expr TRPAREN TSEMICOLON .
 
     $default  reduce using rule 12 (matched_stmt)
 
 
-State 99
+State 125
 
     8 matched_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE . matched_stmt
    16 open_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE . open_stmt
@@ -1328,19 +1901,30 @@ State 99
     TMINUS       shift, and go to state 23
     TREAD        shift, and go to state 24
     TWRITE       shift, and go to state 25
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    comp_stmt     转到状态 26
-    matched_stmt  转到状态 102
-    open_stmt     转到状态 103
-    type          转到状态 31
-    expr          转到状态 32
-    expr_alg      转到状态 33
-    term          转到状态 34
-    factor        转到状态 35
-    identifier    转到状态 36
+    comp_stmt     转到状态 28
+    matched_stmt  转到状态 128
+    open_stmt     转到状态 129
+    type          转到状态 33
+    expr          转到状态 34
+    expr1         转到状态 35
+    expr2         转到状态 36
+    expr3         转到状态 37
+    expr4         转到状态 38
+    expr5         转到状态 39
+    expr6         转到状态 40
+    expr7         转到状态 41
+    expr8         转到状态 42
+    expr_alg      转到状态 43
+    term          转到状态 44
+    factor        转到状态 45
+    factor0       转到状态 46
+    identifier    转到状态 47
 
 
-State 100
+State 126
 
     8 matched_stmt: IF TLPAREN . expr TRPAREN matched_stmt ELSE matched_stmt
 
@@ -1355,16 +1939,27 @@ State 100
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    type        转到状态 31
-    expr        转到状态 104
-    expr_alg    转到状态 33
-    term        转到状态 34
-    factor      转到状态 35
-    identifier  转到状态 36
+    type        转到状态 33
+    expr        转到状态 130
+    expr1       转到状态 35
+    expr2       转到状态 36
+    expr3       转到状态 37
+    expr4       转到状态 38
+    expr5       转到状态 39
+    expr6       转到状态 40
+    expr7       转到状态 41
+    expr8       转到状态 42
+    expr_alg    转到状态 43
+    term        转到状态 44
+    factor      转到状态 45
+    factor0     转到状态 46
+    identifier  转到状态 47
 
 
-State 101
+State 127
 
    14 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON . optional_expr TRPAREN matched_stmt
 
@@ -1379,47 +1974,58 @@ State 101
     TLPAREN      shift, and go to state 21
     TPLUS        shift, and go to state 22
     TMINUS       shift, and go to state 23
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
     $default  reduce using rule 26 (optional_expr)
 
-    type           转到状态 31
-    optional_expr  转到状态 105
-    expr           转到状态 66
-    expr_alg       转到状态 33
-    term           转到状态 34
-    factor         转到状态 35
-    identifier     转到状态 36
+    type           转到状态 33
+    optional_expr  转到状态 131
+    expr           转到状态 86
+    expr1          转到状态 35
+    expr2          转到状态 36
+    expr3          转到状态 37
+    expr4          转到状态 38
+    expr5          转到状态 39
+    expr6          转到状态 40
+    expr7          转到状态 41
+    expr8          转到状态 42
+    expr_alg       转到状态 43
+    term           转到状态 44
+    factor         转到状态 45
+    factor0        转到状态 46
+    identifier     转到状态 47
 
 
-State 102
+State 128
 
     8 matched_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE matched_stmt .
 
     $default  reduce using rule 8 (matched_stmt)
 
 
-State 103
+State 129
 
    16 open_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE open_stmt .
 
     $default  reduce using rule 16 (open_stmt)
 
 
-State 104
+State 130
 
     8 matched_stmt: IF TLPAREN expr . TRPAREN matched_stmt ELSE matched_stmt
 
-    TRPAREN  shift, and go to state 106
+    TRPAREN  shift, and go to state 132
 
 
-State 105
+State 131
 
    14 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr . TRPAREN matched_stmt
 
-    TRPAREN  shift, and go to state 107
+    TRPAREN  shift, and go to state 133
 
 
-State 106
+State 132
 
     8 matched_stmt: IF TLPAREN expr TRPAREN . matched_stmt ELSE matched_stmt
 
@@ -1427,7 +2033,7 @@ State 106
     CHAR         shift, and go to state 11
     FLOAT        shift, and go to state 12
     DOUBLE       shift, and go to state 13
-    IF           shift, and go to state 94
+    IF           shift, and go to state 120
     WHILE        shift, and go to state 15
     FOR          shift, and go to state 16
     TIDENTIFIER  shift, and go to state 17
@@ -1441,18 +2047,29 @@ State 106
     TMINUS       shift, and go to state 23
     TREAD        shift, and go to state 24
     TWRITE       shift, and go to state 25
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    comp_stmt     转到状态 26
-    matched_stmt  转到状态 108
-    type          转到状态 31
-    expr          转到状态 32
-    expr_alg      转到状态 33
-    term          转到状态 34
-    factor        转到状态 35
-    identifier    转到状态 36
+    comp_stmt     转到状态 28
+    matched_stmt  转到状态 134
+    type          转到状态 33
+    expr          转到状态 34
+    expr1         转到状态 35
+    expr2         转到状态 36
+    expr3         转到状态 37
+    expr4         转到状态 38
+    expr5         转到状态 39
+    expr6         转到状态 40
+    expr7         转到状态 41
+    expr8         转到状态 42
+    expr_alg      转到状态 43
+    term          转到状态 44
+    factor        转到状态 45
+    factor0       转到状态 46
+    identifier    转到状态 47
 
 
-State 107
+State 133
 
    14 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN . matched_stmt
 
@@ -1460,7 +2077,7 @@ State 107
     CHAR         shift, and go to state 11
     FLOAT        shift, and go to state 12
     DOUBLE       shift, and go to state 13
-    IF           shift, and go to state 94
+    IF           shift, and go to state 120
     WHILE        shift, and go to state 15
     FOR          shift, and go to state 16
     TIDENTIFIER  shift, and go to state 17
@@ -1474,32 +2091,43 @@ State 107
     TMINUS       shift, and go to state 23
     TREAD        shift, and go to state 24
     TWRITE       shift, and go to state 25
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    comp_stmt     转到状态 26
-    matched_stmt  转到状态 109
-    type          转到状态 31
-    expr          转到状态 32
-    expr_alg      转到状态 33
-    term          转到状态 34
-    factor        转到状态 35
-    identifier    转到状态 36
+    comp_stmt     转到状态 28
+    matched_stmt  转到状态 135
+    type          转到状态 33
+    expr          转到状态 34
+    expr1         转到状态 35
+    expr2         转到状态 36
+    expr3         转到状态 37
+    expr4         转到状态 38
+    expr5         转到状态 39
+    expr6         转到状态 40
+    expr7         转到状态 41
+    expr8         转到状态 42
+    expr_alg      转到状态 43
+    term          转到状态 44
+    factor        转到状态 45
+    factor0       转到状态 46
+    identifier    转到状态 47
 
 
-State 108
+State 134
 
     8 matched_stmt: IF TLPAREN expr TRPAREN matched_stmt . ELSE matched_stmt
 
-    ELSE  shift, and go to state 110
+    ELSE  shift, and go to state 136
 
 
-State 109
+State 135
 
    14 matched_stmt: FOR TLPAREN optional_expr TSEMICOLON optional_expr TSEMICOLON optional_expr TRPAREN matched_stmt .
 
     $default  reduce using rule 14 (matched_stmt)
 
 
-State 110
+State 136
 
     8 matched_stmt: IF TLPAREN expr TRPAREN matched_stmt ELSE . matched_stmt
 
@@ -1507,7 +2135,7 @@ State 110
     CHAR         shift, and go to state 11
     FLOAT        shift, and go to state 12
     DOUBLE       shift, and go to state 13
-    IF           shift, and go to state 94
+    IF           shift, and go to state 120
     WHILE        shift, and go to state 15
     FOR          shift, and go to state 16
     TIDENTIFIER  shift, and go to state 17
@@ -1521,12 +2149,23 @@ State 110
     TMINUS       shift, and go to state 23
     TREAD        shift, and go to state 24
     TWRITE       shift, and go to state 25
+    TNOT         shift, and go to state 26
+    TBNOT        shift, and go to state 27
 
-    comp_stmt     转到状态 26
-    matched_stmt  转到状态 102
-    type          转到状态 31
-    expr          转到状态 32
-    expr_alg      转到状态 33
-    term          转到状态 34
-    factor        转到状态 35
-    identifier    转到状态 36
+    comp_stmt     转到状态 28
+    matched_stmt  转到状态 128
+    type          转到状态 33
+    expr          转到状态 34
+    expr1         转到状态 35
+    expr2         转到状态 36
+    expr3         转到状态 37
+    expr4         转到状态 38
+    expr5         转到状态 39
+    expr6         转到状态 40
+    expr7         转到状态 41
+    expr8         转到状态 42
+    expr_alg      转到状态 43
+    term          转到状态 44
+    factor        转到状态 45
+    factor0       转到状态 46
+    identifier    转到状态 47

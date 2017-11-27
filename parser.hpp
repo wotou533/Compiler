@@ -83,7 +83,11 @@ extern int yydebug;
     TOR = 293,
     TBNOT = 294,
     TBAND = 295,
-    TBOR = 296
+    TBOR = 296,
+    TBXOR = 297,
+    TBLEFT = 298,
+    TBRIGHT = 299,
+    TMODE = 300
   };
 #endif
 
@@ -107,7 +111,7 @@ union YYSTYPE
     Node *identifier;
     char *str;
 
-#line 111 "parser.hpp" /* yacc.c:1909  */
+#line 115 "parser.hpp" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
